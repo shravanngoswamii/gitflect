@@ -1,0 +1,20 @@
+[package]
+name = "gitflect"
+version = "0.1.0"
+authors = ["Shravan Goswami <contact@shravangoswami.com>"]
+edition = "2024"
+rust-version = "1.85"
+description = "A fast Rust Git prompt and Bash/Zsh integration inspired by posh-git"
+license = "MIT"
+readme = "README.md"
+keywords = ["git", "prompt", "bash", "zsh", "posh-git"]
+categories = ["command-line-utilities", "development-tools"]
+
+[[bin]]
+name = "gitflect"
+path = "src/main.rs"
+
+[profile.release]
+codegen-units = 1
+lto = "thin"
+strip = "symbols"
