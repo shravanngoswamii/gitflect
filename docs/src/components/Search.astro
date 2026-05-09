@@ -19,19 +19,14 @@ import '@pagefind/default-ui/css/ui.css';
 		<div class="search-panel">
 			<header>
 				<strong>Search docs</strong>
-				<button type="button" data-search-close aria-label="Close search">
-					<svg aria-hidden="true" viewBox="0 0 24 24">
-						<path
-							d="m6 6 12 12M18 6 6 18"
-							fill="none"
-							stroke="currentColor"
-							stroke-linecap="round"
-							stroke-width="2"
-						/>
-					</svg>
-				</button>
+				<button type="button" data-search-close aria-label="Close search">Esc</button>
 			</header>
-			<div id="pagefind-search"></div>
+			{import.meta.env.DEV && (
+				<p class="search-dev-notice">
+					Search index is not available in the dev server -- run <code>npm run build</code> then <code>npm run preview</code> to use search.
+				</p>
+			)}
+			<div id="pagefind-search" data-pagefind-target></div>
 		</div>
 	</dialog>
 </div>
@@ -45,20 +40,20 @@ import '@pagefind/default-ui/css/ui.css';
 	const closeButton = root?.querySelector('[data-search-close]');
 	const base = import.meta.env.BASE_URL || '/';
 	const normalizedBase = base.endsWith('/') ? base.slice(0, -1) : base;
-	let searchUi;
+	let searchUi: InstanceType<typeof PagefindUI> | undefined;
 
-	const withBase = (url) => {
+	const withBase = (url: string) => {
 		if (!url || /^(https?:|mailto:|#)/.test(url)) return url;
 		if (normalizedBase && url.startsWith(normalizedBase)) return url;
 		return `${normalizedBase}${url.startsWith('/') ? url : `/${url}`}` || url;
 	};
 
-	const rewriteResult = (result) => {
+	const rewriteResult = (result: Record<string, any>) => {
 		const next = {
 			...result,
 			url: withBase(result.url),
 			meta: { ...result.meta },
-			sub_results: result.sub_results?.map((item) => ({ ...item, url: withBase(item.url) })),
+			sub_results: result.sub_results?.map((item: Record<string, any>) => ({ ...item, url: withBase(item.url) })),
 		};
 		if (next.meta.url) next.meta.url = withBase(next.meta.url);
 		return next;
@@ -66,15 +61,26 @@ import '@pagefind/default-ui/css/ui.css';
 
 	const ensureSearch = () => {
 		if (searchUi) return;
-		searchUi = new PagefindUI({
-			element: '#pagefind-search',
-			bundlePath: `${normalizedBase}/pagefind/`,
-			showImages: false,
-			showSubResults: true,
-			excerptLength: 24,
-			resetStyles: false,
-			processResult: rewriteResult,
-		});
+		if (import.meta.env.DEV) {
+			console.warn(
+				'[gitflect] Pagefind search is not available in the dev server.\n' +
+				'Run `astro build` then `astro preview` to enable search.',
+			);
+			return;
+		}
+		try {
+			searchUi = new PagefindUI({
+				element: '#pagefind-search',
+				bundlePath: `${normalizedBase}/pagefind/`,
+				showImages: false,
+				showSubResults: true,
+				excerptLength: 24,
+				resetStyles: false,
+				processResult: rewriteResult,
+			});
+		} catch (err) {
+			console.warn('[gitflect] Failed to initialise Pagefind search:', err);
+		}
 	};
 
 	const openSearch = () => {
@@ -86,10 +92,10 @@ import '@pagefind/default-ui/css/ui.css';
 
 	const closeSearch = () => {
 		if (modal instanceof HTMLDialogElement && modal.open) modal.close();
-		openButton?.focus();
+		if (openButton instanceof HTMLElement) openButton.focus();
 	};
 
-	const followResult = (event) => {
+	const followResult = (event: Event) => {
 		const target = event.target;
 		if (!(target instanceof Element)) return;
 		if (target.closest('a, button, input')) return;

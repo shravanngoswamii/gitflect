@@ -9,19 +9,25 @@ import { withBase } from '../lib/paths';
 	description="A fast Git-aware prompt helper for Bash and Zsh on Linux and macOS."
 >
 	<section class="hero">
-		<div>
-			<h1>Git context, kept close to your prompt.</h1>
-			<p class="hero-copy">
-				<code>gitflect</code> adds a compact repository segment to the prompt you already
-				use. It shows branch state, file counts, upstream divergence, in-progress
-				operations, and completions without becoming a shell framework.
-			</p>
-			<div class="actions">
-				<a class="button" href={withBase('/docs/start/install/')}>Install gitflect</a>
-				<a class="button secondary" href={withBase('/docs/')}>Read the docs</a>
-			</div>
+		<h1>Git context, kept close to your prompt.</h1>
+		<div class="actions">
+			<a class="button" href={withBase('/docs/start/install/')}>Install gitflect</a>
+			<a class="button secondary" href={withBase('/docs/')}>Read the docs</a>
 		</div>
-		<PromptCast />
+		<div class="hero-demo">
+			<div class="terminal-chrome">
+				<span class="chrome-dots">
+					<span></span><span></span><span></span>
+				</span>
+				<span class="chrome-title">gitflect — bash</span>
+			</div>
+			<PromptCast />
+		</div>
+		<p class="hero-copy">
+			<code>gitflect</code> adds a compact repository segment to the prompt you already
+			use. It shows branch state, file counts, upstream divergence, in-progress
+			operations, and completions without becoming a shell framework.
+		</p>
 	</section>
 
 	<section class="section">
