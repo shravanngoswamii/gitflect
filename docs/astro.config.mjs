@@ -3,7 +3,7 @@ import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://shravanngoswamii.github.io',
+	site: 'https://shravangoswami.com',
 	base: process.env.BASE_PATH ?? '/',
 	markdown: {
 		shikiConfig: {
