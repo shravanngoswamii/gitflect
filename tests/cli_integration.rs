@@ -264,20 +264,18 @@ fn merge_state_is_visible_during_conflicts() {
 }
 
 #[test]
-fn generated_shell_init_uses_status_only_segments_and_completions() {
+fn generated_shell_init_uses_status_only_segments() {
     let root = scratch_dir("init-output");
 
     let bash = run_tool(&root, ["init", "bash"].as_slice());
     assert!(bash.contains("# gitflect Bash integration"));
     assert!(bash.contains("prompt --shell bash --status-only"));
     assert!(bash.contains("__gitflect_apply_segment"));
-    assert!(bash.contains("complete -o default -F _gitflect_git_complete"));
 
     let zsh = run_tool(&root, ["init", "zsh"].as_slice());
     assert!(zsh.contains("# gitflect Zsh integration"));
     assert!(zsh.contains("prompt --shell zsh --status-only"));
     assert!(zsh.contains("add-zsh-hook precmd __gitflect_precmd"));
-    assert!(zsh.contains("compdef _gitflect_git_complete"));
 }
 
 #[test]

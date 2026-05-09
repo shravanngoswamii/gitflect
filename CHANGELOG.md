@@ -5,7 +5,23 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-05-10
+
+### Added
+
+- `gitflect config set <key> <value>` — change a setting from the command line without editing the file.
+- `gitflect config get <key>` — print the current value of a setting with valid options shown inline.
+- `gitflect config` output now shows a `# key: option1, option2` comment above each enumerated setting so valid values are always visible.
+- Community health files: `CODE_OF_CONDUCT.md`, `CONTRIBUTING.md`, GitHub issue templates (bug report, feature request), and pull request template.
+- Bug and security reporting links in `gitflect --help`.
+
+### Removed
+
+- Custom tab-completion override for Git subcommands. Bash and Zsh ship superior built-in Git completions; the gitflect override was disruptive and unnecessary.
+
 ## [0.1.1] - 2026-05-10
+
+
 
 ### Fixed
 

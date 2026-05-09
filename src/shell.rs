@@ -95,16 +95,6 @@ case ";${{PROMPT_COMMAND:-}};" in
     *) PROMPT_COMMAND="${{PROMPT_COMMAND:+$PROMPT_COMMAND;}}__gitflect_prompt" ;;
 esac
 
-_gitflect_git_complete() {{
-    local __gitflect_cmds
-    mapfile -t COMPREPLY < <("$__gitflect_bin" complete --shell bash --position "$COMP_CWORD" -- "${{COMP_WORDS[@]}}")
-    compopt -o default 2>/dev/null || true
-}}
-
-for __gitflect_cmd in ${{GITFLECT_GIT_COMMANDS:-git}}; do
-    complete -o default -F _gitflect_git_complete "$__gitflect_cmd"
-done
-unset __gitflect_cmd
 "#
     )
 }
@@ -163,21 +153,6 @@ __gitflect_precmd() {{
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd __gitflect_precmd
 
-autoload -Uz compinit
-if ! whence -w compdef >/dev/null 2>&1; then
-    compinit
-fi
-
-_gitflect_git_complete() {{
-    local -a __gitflect_completions
-    __gitflect_completions=("${{(@f)$("$__gitflect_bin" complete --shell zsh --position "$((CURRENT - 1))" -- "${{words[@]}}")}}")
-    compadd -- "${{__gitflect_completions[@]}}"
-}}
-
-for __gitflect_cmd in ${{=GITFLECT_GIT_COMMANDS:-git}}; do
-    compdef _gitflect_git_complete "$__gitflect_cmd"
-done
-unset __gitflect_cmd
 "#
     )
 }

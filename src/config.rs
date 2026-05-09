@@ -207,58 +207,187 @@ path_status_separator=
             UntrackedMode::Normal => "normal",
             UntrackedMode::All => "all",
         };
-        let mut text = format!(
-            "theme={theme}\n\
-             color={color}\n\
-             enable_prompt_status={}\n\
-             enable_file_status={}\n\
-             enable_stash_status={}\n\
-             untracked_files={untracked}\n\
-             show_zero_counts={}\n\
-             status_first={}\n\
-             abbreviate_home={}\n\
-             abbreviate_git_dir={}\n\
-             branch_display={branch_display}\n\
-             branch_name_limit={}\n\
-             prompt_suffix={}\n",
-            self.enable_prompt_status,
-            self.enable_file_status,
-            self.enable_stash_status,
-            self.show_status_when_zero,
-            self.status_first,
-            self.abbreviate_home,
-            self.abbreviate_git_dir,
-            self.branch_name_limit,
-            self.prompt_suffix,
-        );
-        if let Some(prefix) = &self.prompt_prefix {
-            text.push_str(&format!("prompt_prefix={prefix}\n"));
-        }
-        text.push_str(&format!(
-            "path_status_separator={}\n\
-             show_exit_status={}\n\
-             symbol_added={}\n\
-             symbol_modified={}\n\
-             symbol_removed={}\n\
-             symbol_conflicted={}\n\
-             symbol_ahead={}\n\
-             symbol_behind={}\n\
-             symbol_identical={}\n\
-             symbol_diverged={}\n\
-             symbol_gone={}\n",
-            self.path_status_separator,
-            self.show_exit_status,
-            self.symbols.added,
-            self.symbols.modified,
-            self.symbols.removed,
-            self.symbols.conflicted,
-            self.symbols.branch_ahead,
-            self.symbols.branch_behind,
-            self.symbols.branch_identical,
-            self.symbols.branch_diverged,
-            self.symbols.branch_gone,
+        let mut t = String::new();
+        t.push_str("# theme: posh, plain, nerd\n");
+        t.push_str(&format!("theme={theme}\n"));
+        t.push_str("# color: auto, always, never\n");
+        t.push_str(&format!("color={color}\n"));
+        t.push_str("# true, false\n");
+        t.push_str(&format!(
+            "enable_prompt_status={}\n",
+            self.enable_prompt_status
         ));
-        text
+        t.push_str(&format!("enable_file_status={}\n", self.enable_file_status));
+        t.push_str(&format!(
+            "enable_stash_status={}\n",
+            self.enable_stash_status
+        ));
+        t.push_str("# untracked_files: no, normal, all\n");
+        t.push_str(&format!("untracked_files={untracked}\n"));
+        t.push_str(&format!(
+            "show_zero_counts={}\n",
+            self.show_status_when_zero
+        ));
+        t.push_str(&format!("status_first={}\n", self.status_first));
+        t.push_str(&format!("abbreviate_home={}\n", self.abbreviate_home));
+        t.push_str(&format!("abbreviate_git_dir={}\n", self.abbreviate_git_dir));
+        t.push_str("# branch_display: full, compact, minimal\n");
+        t.push_str(&format!("branch_display={branch_display}\n"));
+        t.push_str(&format!("branch_name_limit={}\n", self.branch_name_limit));
+        t.push_str(&format!("prompt_suffix={}\n", self.prompt_suffix));
+        if let Some(prefix) = &self.prompt_prefix {
+            t.push_str(&format!("prompt_prefix={prefix}\n"));
+        }
+        t.push_str(&format!(
+            "path_status_separator={}\n",
+            self.path_status_separator
+        ));
+        t.push_str(&format!("show_exit_status={}\n", self.show_exit_status));
+        t.push_str("# symbols\n");
+        t.push_str(&format!("symbol_added={}\n", self.symbols.added));
+        t.push_str(&format!("symbol_modified={}\n", self.symbols.modified));
+        t.push_str(&format!("symbol_removed={}\n", self.symbols.removed));
+        t.push_str(&format!("symbol_conflicted={}\n", self.symbols.conflicted));
+        t.push_str(&format!("symbol_ahead={}\n", self.symbols.branch_ahead));
+        t.push_str(&format!("symbol_behind={}\n", self.symbols.branch_behind));
+        t.push_str(&format!(
+            "symbol_identical={}\n",
+            self.symbols.branch_identical
+        ));
+        t.push_str(&format!(
+            "symbol_diverged={}\n",
+            self.symbols.branch_diverged
+        ));
+        t.push_str(&format!("symbol_gone={}\n", self.symbols.branch_gone));
+        t
+    }
+
+    pub fn get_value(&self, key: &str) -> Option<String> {
+        let target = normalize_key(key);
+        for line in self.to_active_config_text().lines() {
+            if line.starts_with('#') || line.is_empty() {
+                continue;
+            }
+            if let Some((k, v)) = line.split_once('=') {
+                if normalize_key(k) == target {
+                    return Some(v.to_string());
+                }
+            }
+        }
+        None
+    }
+
+    pub fn is_known_key(key: &str) -> bool {
+        matches!(
+            normalize_key(key).as_str(),
+            "abbreviategitdir"
+                | "abbreviatehome"
+                | "afterstash"
+                | "afterstatus"
+                | "beforestash"
+                | "beforestatus"
+                | "branchdisplay"
+                | "branchbehindandaheaddisplay"
+                | "branchnamelimit"
+                | "color"
+                | "colormode"
+                | "delimstatus"
+                | "describestyle"
+                | "disabledrepositories"
+                | "enablefilestatus"
+                | "enablepromptstatus"
+                | "enablestash"
+                | "enablestashstatus"
+                | "pathstatusseparator"
+                | "promptbeforesuffix"
+                | "promptprefix"
+                | "promptsuffix"
+                | "showexitstatus"
+                | "showstatuswhenzero"
+                | "showzerocounts"
+                | "statusfirst"
+                | "symboladded"
+                | "symbolmodified"
+                | "symbolremoved"
+                | "symbolconflicted"
+                | "symbolworking"
+                | "symbolstaged"
+                | "symbolclean"
+                | "symbolahead"
+                | "symbolbehind"
+                | "symboldiverged"
+                | "symbolidentical"
+                | "symbolgone"
+                | "theme"
+                | "truncatedbranchsuffix"
+                | "untrackedfiles"
+                | "untrackedfilesmode"
+        )
+    }
+
+    pub fn valid_values_for(key: &str) -> Option<&'static str> {
+        match normalize_key(key).as_str() {
+            "theme" => Some("posh, plain, nerd"),
+            "color" | "colormode" => Some("auto, always, never"),
+            "branchdisplay" | "branchbehindandaheaddisplay" => Some("full, compact, minimal"),
+            "describestyle" => Some("default, contains, branch, describe"),
+            "untrackedfiles" | "untrackedfilesmode" => Some("no, normal, all"),
+            "enablefilestatus" | "enablepromptstatus" | "enablestash" | "enablestashstatus"
+            | "showexitstatus" | "showstatuswhenzero" | "showzerocounts" | "statusfirst"
+            | "abbreviatehome" | "abbreviategitdir" => Some("true, false"),
+            _ => None,
+        }
+    }
+
+    pub fn set_in_file(key: &str, value: &str) -> Result<PathBuf, String> {
+        let path = config_path()
+            .ok_or_else(|| "cannot determine config path: HOME not set".to_string())?;
+
+        if let Some(parent) = path.parent() {
+            fs::create_dir_all(parent)
+                .map_err(|e| format!("failed to create config directory: {e}"))?;
+        }
+
+        let existing = if path.exists() {
+            fs::read_to_string(&path).map_err(|e| format!("failed to read config file: {e}"))?
+        } else {
+            String::new()
+        };
+
+        let target_norm = normalize_key(key);
+        let new_line = format!("{key}={value}");
+        let mut replaced = false;
+
+        let mut lines: Vec<String> = existing
+            .lines()
+            .map(|line| {
+                let trimmed = line.trim();
+                if !replaced && !trimmed.is_empty() && !trimmed.starts_with('#') {
+                    if let Some((k, _)) = trimmed.split_once('=') {
+                        if normalize_key(k.trim()) == target_norm {
+                            replaced = true;
+                            return new_line.clone();
+                        }
+                    }
+                }
+                line.to_string()
+            })
+            .collect();
+
+        if !replaced {
+            if !existing.is_empty() && !existing.ends_with('\n') {
+                lines.push(String::new());
+            }
+            lines.push(new_line);
+        }
+
+        let mut content = lines.join("\n");
+        if !content.ends_with('\n') {
+            content.push('\n');
+        }
+
+        fs::write(&path, &content).map_err(|e| format!("failed to write config file: {e}"))?;
+        Ok(path)
     }
 
     fn apply_env(&mut self) {
@@ -305,7 +434,7 @@ path_status_separator=
         }
     }
 
-    fn apply_key_value_lines(&mut self, contents: &str) {
+    pub fn apply_key_value_lines(&mut self, contents: &str) {
         for raw_line in contents.lines() {
             let line = raw_line.trim();
             if line.is_empty() || line.starts_with('#') {

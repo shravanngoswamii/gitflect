@@ -1,4 +1,3 @@
-mod complete;
 mod config;
 mod git;
 mod render;
@@ -21,7 +20,6 @@ fn main() -> ExitCode {
         "prompt" => command_prompt(&args[1..]),
         "status" => command_status(&args[1..]),
         "init" => command_init(&args[1..]),
-        "complete" => command_complete(&args[1..]),
         "config" => command_config(&args[1..]),
         "help" | "-h" | "--help" => {
             print_help();
@@ -167,47 +165,6 @@ fn command_init(args: &[String]) -> ExitCode {
     ExitCode::SUCCESS
 }
 
-fn command_complete(args: &[String]) -> ExitCode {
-    let config = Config::load();
-    let mut position = None;
-    let mut words = Vec::new();
-    let mut index = 0;
-
-    while index < args.len() {
-        match args[index].as_str() {
-            "--position" => {
-                let Some(value) = args.get(index + 1) else {
-                    eprintln!("--position requires an integer");
-                    return ExitCode::from(2);
-                };
-                position = value.parse::<usize>().ok();
-                index += 2;
-            }
-            "--shell" => {
-                if args.get(index + 1).is_none() {
-                    eprintln!("--shell requires bash or zsh");
-                    return ExitCode::from(2);
-                }
-                index += 2;
-            }
-            "--" => {
-                words.extend(args[index + 1..].iter().cloned());
-                break;
-            }
-            value => {
-                words.push(value.to_string());
-                index += 1;
-            }
-        }
-    }
-
-    let position = position.unwrap_or_else(|| words.len().saturating_sub(1));
-    for completion in complete::complete(&words, position, &config) {
-        println!("{completion}");
-    }
-    ExitCode::SUCCESS
-}
-
 fn command_config(args: &[String]) -> ExitCode {
     let subcommand = args.first().map(String::as_str).unwrap_or("");
 
@@ -248,6 +205,65 @@ fn command_config(args: &[String]) -> ExitCode {
             ExitCode::SUCCESS
         }
 
+        "get" => {
+            let Some(key) = args.get(1) else {
+                eprintln!("usage: gitflect config get <key>");
+                return ExitCode::from(2);
+            };
+            if !Config::is_known_key(key) {
+                eprintln!("unknown config key: {key}");
+                eprintln!("run 'gitflect config' to see all keys");
+                return ExitCode::from(2);
+            }
+            let config = Config::load();
+            match config.get_value(key) {
+                Some(v) => {
+                    if let Some(opts) = Config::valid_values_for(key) {
+                        println!("{v}  # {opts}");
+                    } else {
+                        println!("{v}");
+                    }
+                }
+                None => {
+                    eprintln!("unknown config key: {key}");
+                    return ExitCode::from(2);
+                }
+            }
+            ExitCode::SUCCESS
+        }
+
+        "set" => {
+            let (Some(key), Some(value)) = (args.get(1), args.get(2)) else {
+                eprintln!("usage: gitflect config set <key> <value>");
+                return ExitCode::from(2);
+            };
+            if !Config::is_known_key(key) {
+                eprintln!("unknown config key: {key}");
+                if let Some(opts) = Config::valid_values_for(key) {
+                    eprintln!("valid values: {opts}");
+                }
+                eprintln!("run 'gitflect config' to see all keys");
+                return ExitCode::from(2);
+            }
+            if let Some(opts) = Config::valid_values_for(key) {
+                let normalized = value.trim().to_ascii_lowercase();
+                let valid = opts.split(", ").any(|opt| opt == normalized);
+                if !valid {
+                    eprintln!("invalid value for {key}: {value}");
+                    eprintln!("valid values: {opts}");
+                    return ExitCode::from(2);
+                }
+            }
+            match Config::set_in_file(key, value) {
+                Ok(path) => println!("set {key}={value} in {}", path.display()),
+                Err(error) => {
+                    eprintln!("{error}");
+                    return ExitCode::FAILURE;
+                }
+            }
+            ExitCode::SUCCESS
+        }
+
         "" => {
             let config = Config::load();
             let path = config::config_path();
@@ -266,7 +282,9 @@ fn command_config(args: &[String]) -> ExitCode {
 
         unknown => {
             eprintln!("unknown config subcommand: {unknown}");
-            eprintln!("usage: gitflect config [path | init | default]");
+            eprintln!(
+                "usage: gitflect config [get <key> | set <key> <value> | path | init | default]"
+            );
             ExitCode::from(2)
         }
     }
@@ -280,13 +298,14 @@ USAGE:
   gitflect prompt [--shell bash|zsh|raw|plain] [--status-only] [--last-status N]
   gitflect status [--json] [--shell bash|zsh|raw|plain]
   gitflect init bash|zsh
-  gitflect complete --position N -- WORDS...
   gitflect config                      Show active configuration
+  gitflect config get <key>            Print the value of a config key
+  gitflect config set <key> <value>    Set a config key in the config file
   gitflect config path                 Print config file path
   gitflect config init                 Create config file from defaults
   gitflect config default              Print default config template
 
-SHELL SETUP:
+SHELL SETUP (manual install only — the install script handles this automatically):
   Bash: eval "$(gitflect init bash)"
   Zsh:  eval "$(gitflect init zsh)"
 
@@ -294,6 +313,11 @@ CONFIG:
   File: $GITFLECT_CONFIG or $XDG_CONFIG_HOME/gitflect/config or ~/.config/gitflect/config
   Env vars with GITFLECT_ prefix override the file (e.g. GITFLECT_ENABLE_STASH=true)
   Run 'gitflect config init' to create the file, 'gitflect config' to see active values.
+  Run 'gitflect config set theme plain' to change a setting from the command line.
+
+BUGS:
+  Report issues at: https://github.com/shravanngoswamii/gitflect/issues
+  Security issues: https://github.com/shravanngoswamii/gitflect/security
 "#,
         env!("CARGO_PKG_VERSION")
     );

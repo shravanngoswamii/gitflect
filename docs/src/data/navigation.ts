@@ -14,7 +14,6 @@ export const navGroups = [
 		items: [
 			{ title: 'Prompt segments', href: '/docs/use/prompt-segments/' },
 			{ title: 'Configuration', href: '/docs/use/configuration/' },
-			{ title: 'Completions', href: '/docs/use/completions/' },
 		],
 	},
 	{

@@ -14,6 +14,27 @@ To see every setting that is currently in effect (file + env overrides combined)
 gitflect config
 ```
 
+Each enumerated setting shows its valid options in a comment on the line above.
+
+## Read and write settings from the CLI
+
+Get the current value of any key:
+
+```sh
+gitflect config get theme
+# posh  # posh, plain, nerd
+```
+
+Set a value without opening the file:
+
+```sh
+gitflect config set theme plain
+gitflect config set color never
+gitflect config set enable_stash_status true
+```
+
+`set` writes to the config file and validates the value against the allowed options. If the key does not exist or the value is invalid, an error is printed with the valid choices.
+
 ## Create the config file
 
 ```sh
@@ -44,24 +65,24 @@ Environment variables are applied after the file, so they always win.
 
 ## Settings reference
 
-| Key | Default | Description |
+| Key | Default | Valid values |
 | :-- | :-- | :-- |
-| `theme` | `posh` | Symbol set: `posh`, `plain`, `nerd` |
-| `color` | `auto` | Color output: `auto`, `always`, `never` |
-| `enable_prompt_status` | `true` | Show the Git segment in the prompt |
-| `enable_file_status` | `true` | Show staged and working tree counts |
-| `enable_stash_status` | `false` | Show stash count |
-| `untracked_files` | `normal` | Untracked file detection: `no`, `normal`, `all` |
-| `show_zero_counts` | `true` | Keep zero counts visible |
-| `status_first` | `false` | Place status before path in full-prompt mode |
-| `abbreviate_home` | `true` | Shorten home directory to `~` |
-| `abbreviate_git_dir` | `false` | Shorten bare repo path |
-| `branch_display` | `full` | Upstream display: `full`, `compact`, `minimal` |
-| `branch_name_limit` | `0` | Truncate branch names longer than N (0 = off) |
-| `prompt_suffix` | `> ` | Suffix appended after the prompt |
-| `prompt_prefix` | _(empty)_ | Prefix before the path; auto-set to `[user@host]:` over SSH |
-| `path_status_separator` | ` ` | Separator between path and Git segment |
-| `show_exit_status` | `false` | Append last exit code when non-zero |
+| `theme` | `posh` | `posh`, `plain`, `nerd` |
+| `color` | `auto` | `auto`, `always`, `never` |
+| `enable_prompt_status` | `true` | `true`, `false` |
+| `enable_file_status` | `true` | `true`, `false` |
+| `enable_stash_status` | `false` | `true`, `false` |
+| `untracked_files` | `normal` | `no`, `normal`, `all` |
+| `show_zero_counts` | `true` | `true`, `false` |
+| `status_first` | `false` | `true`, `false` |
+| `abbreviate_home` | `true` | `true`, `false` |
+| `abbreviate_git_dir` | `false` | `true`, `false` |
+| `branch_display` | `full` | `full`, `compact`, `minimal` |
+| `branch_name_limit` | `0` | integer (0 = off) |
+| `prompt_suffix` | `> ` | any string |
+| `prompt_prefix` | _(empty)_ | any string; auto-set to `[user@host]:` over SSH |
+| `path_status_separator` | ` ` | any string |
+| `show_exit_status` | `false` | `true`, `false` |
 
 ## Environment overrides
 
@@ -77,12 +98,6 @@ Every key has a `GITFLECT_` env var equivalent:
 | `GITFLECT_STATUS_FIRST` | `status_first` |
 | `GITFLECT_BRANCH_NAME_LIMIT` | `branch_name_limit` |
 | `GITFLECT_DISABLED_REPOSITORIES` | `disabled_repositories` |
-
-To enable completions for Git aliases, set:
-
-```sh
-export GITFLECT_GIT_COMMANDS="git g"
-```
 
 ## Symbols
 
