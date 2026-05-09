@@ -3,18 +3,41 @@
 	--bg: #fbfaf7;
 	--surface: #ffffff;
 	--surface-muted: #f1f4f0;
+	--surface-card: rgba(255, 255, 255, 0.72);
 	--text: #151816;
 	--muted: #626b65;
 	--line: #dfe5df;
 	--accent: #14724b;
 	--accent-strong: #0c5135;
 	--amber: #b7791f;
+	--header-bg: rgba(251, 250, 247, 0.88);
 	--code-bg: #101413;
 	--code-text: #f4f1ea;
+	--logo-primary: #f4f1ea;
+	--logo-accent: #6ee7b7;
+	--logo-warn: #eab308;
 	--shadow: 0 18px 60px rgba(16, 20, 19, 0.08);
 	font-family:
 		Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
 		sans-serif;
+}
+
+:root[data-theme='dark'] {
+	color-scheme: dark;
+	--bg: #101413;
+	--surface: #171d1a;
+	--surface-muted: #202820;
+	--surface-card: rgba(23, 29, 26, 0.78);
+	--text: #f4f1ea;
+	--muted: #b9c2bb;
+	--line: #2f3832;
+	--accent: #6ee7b7;
+	--accent-strong: #dcfce7;
+	--amber: #eab308;
+	--header-bg: rgba(16, 20, 19, 0.88);
+	--code-bg: #070908;
+	--code-text: #f4f1ea;
+	--shadow: 0 22px 70px rgba(0, 0, 0, 0.38);
 }
 
 * {
@@ -31,7 +54,7 @@ body {
 	margin: 0;
 	min-width: 320px;
 	background:
-		linear-gradient(180deg, rgba(20, 114, 75, 0.08), transparent 26rem),
+		linear-gradient(180deg, color-mix(in srgb, var(--accent) 12%, transparent), transparent 26rem),
 		var(--bg);
 }
 
@@ -51,10 +74,10 @@ pre {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
-	gap: 1rem;
+	gap: 0.9rem;
 	padding: 1rem max(1.25rem, calc((100vw - 1120px) / 2));
-	border-bottom: 1px solid rgba(223, 229, 223, 0.78);
-	background: rgba(251, 250, 247, 0.86);
+	border-bottom: 1px solid var(--line);
+	background: var(--header-bg);
 	backdrop-filter: blur(18px);
 }
 
@@ -67,35 +90,11 @@ pre {
 	letter-spacing: 0;
 }
 
-.brand-mark {
-	position: relative;
-	width: 1.65rem;
-	height: 1.65rem;
-	border-radius: 7px;
-	background: var(--code-bg);
-	box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
-}
-
-.brand-mark::before,
-.brand-mark::after {
-	position: absolute;
-	content: "";
-	border-radius: 999px;
-}
-
-.brand-mark::before {
-	inset: 0.68rem 0.38rem auto;
-	height: 0.25rem;
-	background: #f4f1ea;
-}
-
-.brand-mark::after {
-	right: 0.38rem;
-	top: 0.38rem;
-	width: 0.44rem;
-	height: 0.44rem;
-	background: #6ee7b7;
-	box-shadow: 0 0.48rem 0 #eab308;
+.logo-mark {
+	width: 1.8rem;
+	height: 1.8rem;
+	color: #101413;
+	flex: 0 0 auto;
 }
 
 .top-nav,
@@ -116,6 +115,111 @@ pre {
 .top-nav a:hover,
 .site-footer a:hover {
 	color: var(--accent);
+}
+
+.site-search {
+	position: relative;
+	flex: 1 1 16rem;
+	max-width: 20rem;
+}
+
+.site-search input {
+	width: 100%;
+	min-height: 2.35rem;
+	padding: 0 0.8rem;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--surface);
+	color: var(--text);
+	font: inherit;
+}
+
+.site-search input:focus {
+	outline: 2px solid color-mix(in srgb, var(--accent) 40%, transparent);
+	outline-offset: 2px;
+}
+
+.search-results {
+	position: absolute;
+	top: calc(100% + 0.45rem);
+	right: 0;
+	left: 0;
+	z-index: 20;
+	display: grid;
+	gap: 0.35rem;
+	padding: 0.5rem;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--surface);
+	box-shadow: var(--shadow);
+}
+
+.search-result {
+	display: grid;
+	gap: 0.2rem;
+	padding: 0.65rem;
+	border-radius: 6px;
+	text-decoration: none;
+}
+
+.search-result:hover {
+	background: var(--surface-muted);
+}
+
+.search-result strong {
+	font-size: 0.92rem;
+}
+
+.search-result span,
+.search-empty {
+	margin: 0;
+	color: var(--muted);
+	font-size: 0.82rem;
+	line-height: 1.5;
+}
+
+.theme-toggle {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.48rem;
+	min-height: 2.35rem;
+	padding: 0 0.72rem;
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	background: var(--surface);
+	color: var(--muted);
+	font: inherit;
+	cursor: pointer;
+}
+
+.theme-toggle span {
+	position: relative;
+	width: 0.9rem;
+	height: 0.9rem;
+	border-radius: 999px;
+	background: var(--amber);
+}
+
+.theme-toggle[aria-pressed='true'] span {
+	background: var(--accent);
+	box-shadow: inset -0.32rem -0.12rem 0 var(--surface);
+}
+
+.theme-toggle:hover {
+	color: var(--text);
+	border-color: var(--accent);
+}
+
+.sr-only {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	padding: 0;
+	margin: -1px;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	white-space: nowrap;
+	border: 0;
 }
 
 .hero {
@@ -153,6 +257,11 @@ pre {
 	line-height: 1.75;
 }
 
+.hero-copy code,
+.section-header code {
+	color: var(--text);
+}
+
 .actions {
 	display: flex;
 	gap: 0.8rem;
@@ -174,12 +283,17 @@ pre {
 	text-decoration: none;
 }
 
+:root[data-theme='dark'] .button {
+	color: #101413;
+}
+
 .button.secondary {
 	background: transparent;
 	color: var(--accent-strong);
 }
 
-.terminal-card {
+.prompt-player {
+	min-width: 0;
 	border: 1px solid rgba(244, 241, 234, 0.1);
 	border-radius: 8px;
 	background: var(--code-bg);
@@ -188,35 +302,10 @@ pre {
 	overflow: hidden;
 }
 
-.terminal-bar {
-	display: flex;
-	justify-content: space-between;
-	gap: 1rem;
-	padding: 0.78rem 1rem;
-	border-bottom: 1px solid rgba(244, 241, 234, 0.12);
-	color: #bdb8ae;
-	font-size: 0.86rem;
-}
-
-.terminal-card pre {
-	margin: 0;
-	padding: 1.15rem;
-	overflow-x: auto;
-	font-size: 0.92rem;
-	line-height: 1.75;
-}
-
-.muted-line {
-	color: #928d83;
-}
-
-.prompt-path {
-	color: #fde68a;
-}
-
-.prompt-segment {
-	color: #6ee7b7;
-	font-weight: 800;
+.prompt-player div.ap-wrapper,
+.prompt-player div.ap-player {
+	width: 100%;
+	border-radius: 8px;
 }
 
 .section {
@@ -254,7 +343,7 @@ pre {
 	padding: 1.2rem;
 	border: 1px solid var(--line);
 	border-radius: 8px;
-	background: rgba(255, 255, 255, 0.66);
+	background: var(--surface-card);
 }
 
 .feature h3,
@@ -277,7 +366,7 @@ pre {
 
 .doc-link:hover {
 	border-color: var(--accent);
-	box-shadow: 0 12px 35px rgba(20, 114, 75, 0.09);
+	box-shadow: 0 12px 35px color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 .install-strip {
@@ -478,6 +567,18 @@ pre {
 	color: var(--text);
 }
 
+@media (max-width: 980px) {
+	.site-header {
+		flex-wrap: wrap;
+	}
+
+	.site-search {
+		order: 3;
+		width: 100%;
+		max-width: none;
+	}
+}
+
 @media (max-width: 860px) {
 	.site-header {
 		position: static;
@@ -503,7 +604,7 @@ pre {
 		padding: 1rem;
 		border: 1px solid var(--line);
 		border-radius: 8px;
-		background: rgba(255, 255, 255, 0.66);
+		background: var(--surface-card);
 	}
 
 	.install-strip {
@@ -521,6 +622,11 @@ pre {
 	.top-nav {
 		width: 100%;
 		justify-content: space-between;
+	}
+
+	.theme-toggle {
+		width: 100%;
+		justify-content: center;
 	}
 
 	.hero h1 {

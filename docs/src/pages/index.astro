@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PromptCast from '../components/PromptCast.astro';
 ---
 
 <BaseLayout
@@ -11,7 +12,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 			<p class="eyebrow">Rust Git prompt for Bash and Zsh</p>
 			<h1>Git context, kept close to your prompt.</h1>
 			<p class="hero-copy">
-				`gitflect` adds a compact repository segment to the prompt you already
+				<code>gitflect</code> adds a compact repository segment to the prompt you already
 				use. It shows branch state, file counts, upstream divergence, in-progress
 				operations, and completions without becoming a shell framework.
 			</p>
@@ -20,25 +21,14 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 				<a class="button secondary" href="/docs/">Read the docs</a>
 			</div>
 		</div>
-		<div class="terminal-card" aria-label="gitflect prompt preview">
-			<div class="terminal-bar">
-				<span>prompt preview</span>
-				<span>bash / zsh</span>
-			</div>
-			<pre><code><span class="muted-line">seeker@fedora</span>:<span class="prompt-path">~/work/app</span> <span class="prompt-segment">[main ≡ +1 ~2 -0 !]</span>$ git status
-<span class="muted-line">On branch main
-Changes not staged for commit:
-  modified:   src/render.rs
-Untracked files:
-  docs/configuration.md</span></code></pre>
-		</div>
+		<PromptCast />
 	</section>
 
 	<section class="section">
 		<div class="section-header">
 			<h2>Small by design.</h2>
 			<p>
-				`gitflect` focuses on one job: render Git state quickly and predictably
+				<code>gitflect</code> focuses on one job: render Git state quickly and predictably
 				for interactive shells.
 			</p>
 		</div>
@@ -64,7 +54,7 @@ Untracked files:
 			<p>Install from GitHub Releases, then load the shell integration.</p>
 		</div>
 		<div class="install-strip">
-			<pre><code>curl -fsSL https://raw.githubusercontent.com/shravangoswami/gitflect/main/install.sh | sh</code></pre>
+			<pre><code>curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh</code></pre>
 			<a class="button secondary" href="/docs/start/shell-setup/">Shell setup</a>
 		</div>
 	</section>

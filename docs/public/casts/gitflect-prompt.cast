@@ -1,0 +1,11 @@
+{"version":2,"width":82,"height":12,"timestamp":1778293200,"env":{"SHELL":"/bin/bash","TERM":"xterm-256color"}}
+[0.20,"o","\u001b[1;33mseeker@fedora\u001b[0m:\u001b[36m~/work/app\u001b[0m \u001b[32m[main ≡]\u001b[0m$ "]
+[0.85,"o","git status\r\n"]
+[1.10,"o","On branch main\r\nYour branch is up to date with 'origin/main'.\r\n\r\nnothing to commit, working tree clean\r\n"]
+[1.90,"o","\u001b[1;33mseeker@fedora\u001b[0m:\u001b[36m~/work/app\u001b[0m \u001b[32m[main ≡]\u001b[0m$ "]
+[2.50,"o","printf \"work\" >> src/render.rs\r\n"]
+[3.10,"o","\u001b[1;33mseeker@fedora\u001b[0m:\u001b[36m~/work/app\u001b[0m \u001b[32m[main ≡ +0 ~1 -0]\u001b[0m$ "]
+[3.80,"o","touch docs/configuration.md\r\n"]
+[4.40,"o","\u001b[1;33mseeker@fedora\u001b[0m:\u001b[36m~/work/app\u001b[0m \u001b[32m[main ≡ +1 ~1 -0 !]\u001b[0m$ "]
+[5.10,"o","git add docs/configuration.md\r\n"]
+[5.80,"o","\u001b[1;33mseeker@fedora\u001b[0m:\u001b[36m~/work/app\u001b[0m \u001b[32m[main ≡ +1 ~0 -0 | +0 ~1 -0]\u001b[0m$ "]

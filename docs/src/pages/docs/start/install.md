@@ -9,7 +9,7 @@ description: Install gitflect from GitHub releases.
 ## Install script
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/shravangoswami/gitflect/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
 The installer chooses a target archive based on your operating system and CPU:
@@ -26,7 +26,7 @@ The installer chooses a target archive based on your operating system and CPU:
 By default, the binary is installed to a user-local bin directory. You can choose a different directory with `BIN_DIR`.
 
 ```sh
-BIN_DIR="$HOME/.local/bin" sh -c "$(curl -fsSL https://raw.githubusercontent.com/shravangoswami/gitflect/main/install.sh)"
+BIN_DIR="$HOME/.local/bin" sh -c "$(curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh)"
 ```
 
 Make sure the selected directory is on `PATH`.
@@ -40,13 +40,13 @@ echo "$PATH" | tr ':' '\n'
 To install a specific release, pass `GITFLECT_VERSION`.
 
 ```sh
-GITFLECT_VERSION=v0.1.0 curl -fsSL https://raw.githubusercontent.com/shravangoswami/gitflect/main/install.sh | sh
+GITFLECT_VERSION=v0.1.0 curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
 Use `latest` to follow the newest GitHub release.
 
 ```sh
-GITFLECT_VERSION=latest curl -fsSL https://raw.githubusercontent.com/shravangoswami/gitflect/main/install.sh | sh
+GITFLECT_VERSION=latest curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
 ## Verify

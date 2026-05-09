@@ -21,7 +21,7 @@ Each archive also has a `.sha256` checksum file.
 
 | Variable | Default | Purpose |
 | :-- | :-- | :-- |
-| `GITFLECT_REPO` | `shravangoswami/gitflect` | GitHub owner and repository |
+| `GITFLECT_REPO` | `shravanngoswamii/gitflect` | GitHub owner and repository |
 | `GITFLECT_VERSION` | `latest` | Release tag or latest release |
 | `GITFLECT_BASE_URL` | GitHub releases URL | Override download base URL |
 | `BIN_DIR` | User-local bin directory | Install destination |

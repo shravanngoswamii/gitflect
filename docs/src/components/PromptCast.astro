@@ -1,0 +1,23 @@
+---
+import 'asciinema-player/dist/bundle/asciinema-player.css';
+---
+
+<div class="prompt-player" data-prompt-player aria-label="gitflect prompt asciinema recording"></div>
+
+<script>
+	import * as AsciinemaPlayer from 'asciinema-player';
+
+	const target = document.querySelector('[data-prompt-player]');
+	if (target) {
+		AsciinemaPlayer.create('/casts/gitflect-prompt.cast', target, {
+			autoplay: true,
+			loop: true,
+			speed: 1.08,
+			idleTimeLimit: 1.1,
+			cols: 82,
+			rows: 12,
+			fit: false,
+			theme: 'asciinema',
+		});
+	}
+</script>

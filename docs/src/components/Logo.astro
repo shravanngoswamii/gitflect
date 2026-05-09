@@ -1,0 +1,29 @@
+---
+interface Props {
+	class?: string;
+}
+
+const className = Astro.props.class ?? 'logo-mark';
+---
+
+<svg class={className} viewBox="0 0 128 128" role="img" aria-label="gitflect">
+	<rect width="128" height="128" rx="28" fill="currentColor" class="logo-bg" />
+	<path
+		d="M34 72h32c16 0 28-12 28-28"
+		fill="none"
+		stroke="var(--logo-primary)"
+		stroke-width="11"
+		stroke-linecap="round"
+	/>
+	<path
+		d="M66 72c16 0 28 12 28 28"
+		fill="none"
+		stroke="var(--logo-accent)"
+		stroke-width="11"
+		stroke-linecap="round"
+	/>
+	<circle cx="34" cy="72" r="12" fill="var(--logo-primary)" />
+	<circle cx="94" cy="42" r="12" fill="var(--logo-warn)" />
+	<circle cx="94" cy="100" r="12" fill="var(--logo-accent)" />
+	<path d="M46 36h22" stroke="var(--logo-accent)" stroke-width="8" stroke-linecap="round" />
+</svg>

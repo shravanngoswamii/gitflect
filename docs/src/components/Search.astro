@@ -1,0 +1,83 @@
+<div class="site-search" data-search data-pagefind-ignore>
+	<label class="sr-only" for="site-search-input">Search documentation</label>
+	<input id="site-search-input" type="search" placeholder="Search docs" autocomplete="off" />
+	<div class="search-results" data-search-results hidden></div>
+</div>
+
+<script>
+	const root = document.querySelector('[data-search]');
+	const input = root?.querySelector('input');
+	const results = root?.querySelector('[data-search-results]');
+	let pagefind;
+
+	const escapeHtml = (value) =>
+		String(value ?? '').replace(/[&<>"']/g, (char) => {
+			const replacements = {
+				'&': '&amp;',
+				'<': '&lt;',
+				'>': '&gt;',
+				'"': '&quot;',
+				"'": '&#39;',
+			};
+			return replacements[char];
+		});
+
+	const loadPagefind = async () => {
+		if (pagefind) return pagefind;
+		try {
+			const pagefindPath = '/pagefind/pagefind.js';
+			pagefind = await import(/* @vite-ignore */ pagefindPath);
+			await pagefind.options({ excerptLength: 24 });
+			return pagefind;
+		} catch {
+			if (input) input.placeholder = 'Search after build';
+			return null;
+		}
+	};
+
+	const closeResults = () => {
+		if (!results) return;
+		results.hidden = true;
+		results.innerHTML = '';
+	};
+
+	const renderResults = (items) => {
+		if (!results) return;
+		if (items.length === 0) {
+			results.hidden = false;
+			results.innerHTML = '<p class="search-empty">No results found.</p>';
+			return;
+		}
+
+		results.hidden = false;
+		results.innerHTML = items
+			.map(
+				(item) => `
+					<a class="search-result" href="${escapeHtml(item.url)}">
+						<strong>${escapeHtml(item.meta?.title || item.url)}</strong>
+						<span>${escapeHtml(item.excerpt || '')}</span>
+					</a>
+				`
+			)
+			.join('');
+	};
+
+	input?.addEventListener('input', async () => {
+		const query = input.value.trim();
+		if (query.length < 2) {
+			closeResults();
+			return;
+		}
+
+		const pagefindApi = await loadPagefind();
+		if (!pagefindApi) return;
+
+		const search = await pagefindApi.search(query);
+		const items = await Promise.all(search.results.slice(0, 6).map((result) => result.data()));
+		renderResults(items);
+	});
+
+	document.addEventListener('click', (event) => {
+		if (root && !root.contains(event.target)) closeResults();
+	});
+</script>

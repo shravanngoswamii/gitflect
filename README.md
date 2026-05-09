@@ -25,7 +25,7 @@ Rust binary.
 ## Install
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/shravangoswami/gitflect/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
 Re-run the installer to update to the latest GitHub release.

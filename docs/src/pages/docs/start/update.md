@@ -9,7 +9,7 @@ The installer is idempotent. Running it again replaces the existing `gitflect` b
 ## Update to latest
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/shravangoswami/gitflect/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
 ## Update a custom install directory
@@ -17,7 +17,7 @@ curl -fsSL https://raw.githubusercontent.com/shravangoswami/gitflect/main/instal
 Use the same `BIN_DIR` you used during installation.
 
 ```sh
-BIN_DIR="$HOME/.local/bin" curl -fsSL https://raw.githubusercontent.com/shravangoswami/gitflect/main/install.sh | sh
+BIN_DIR="$HOME/.local/bin" curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
 ## Roll back
@@ -25,7 +25,7 @@ BIN_DIR="$HOME/.local/bin" curl -fsSL https://raw.githubusercontent.com/shravang
 Install a previous tag explicitly.
 
 ```sh
-GITFLECT_VERSION=v0.1.0 curl -fsSL https://raw.githubusercontent.com/shravangoswami/gitflect/main/install.sh | sh
+GITFLECT_VERSION=v0.1.0 curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
 ## Confirm the active binary

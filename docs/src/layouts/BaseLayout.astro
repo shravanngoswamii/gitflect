@@ -1,6 +1,8 @@
 ---
 import '../styles/global.css';
 import { quickLinks } from '../data/navigation';
+import Logo from '../components/Logo.astro';
+import Search from '../components/Search.astro';
 
 interface Props {
 	title?: string;
@@ -14,6 +16,7 @@ const {
 	bodyClass = '',
 } = Astro.props;
 const pageTitle = title === 'gitflect' ? 'gitflect' : `${title} | gitflect`;
+const sponsorUrl = 'https://github.com/sponsors/shravanngoswamii';
 ---
 
 <!doctype html>
@@ -24,32 +27,66 @@ const pageTitle = title === 'gitflect' ? 'gitflect' : `${title} | gitflect`;
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
 		<title>{pageTitle}</title>
+		<script is:inline>
+			(() => {
+				const key = 'gitflect-theme';
+				const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+				const stored = localStorage.getItem(key);
+				document.documentElement.dataset.theme = stored || preferred;
+			})();
+		</script>
 	</head>
 	<body class={bodyClass}>
-		<header class="site-header">
+		<header class="site-header" data-pagefind-ignore>
 			<a class="brand" href="/" aria-label="gitflect home">
-				<span class="brand-mark" aria-hidden="true"></span>
+				<Logo />
 				<span>gitflect</span>
 			</a>
+			<Search />
 			<nav class="top-nav" aria-label="Main navigation">
 				<a href="/docs/">Docs</a>
 				<a href="/docs/start/install/">Install</a>
-				<a href="https://github.com/shravangoswami/gitflect">GitHub</a>
+				<a href={sponsorUrl}>Sponsor</a>
+				<a href="https://github.com/shravanngoswamii/gitflect">GitHub</a>
 			</nav>
+			<button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle dark mode">
+				<span aria-hidden="true"></span>
+				Theme
+			</button>
 		</header>
-		<main>
+		<main data-pagefind-body>
 			<slot />
 		</main>
-		<footer class="site-footer">
+		<footer class="site-footer" data-pagefind-ignore>
 			<div>
 				<strong>gitflect</strong>
 				<span>Fast Git context for Unix shells.</span>
 			</div>
 			<nav aria-label="Footer navigation">
 				{quickLinks.slice(0, 4).map((link) => <a href={link.href}>{link.title}</a>)}
+				<a href={sponsorUrl}>Sponsor</a>
+				<a href="https://github.com/shravanngoswamii/gitflect">GitHub</a>
 			</nav>
 		</footer>
+		<script is:inline>
+			(() => {
+				const key = 'gitflect-theme';
+				const root = document.documentElement;
+				const button = document.querySelector('[data-theme-toggle]');
+				const apply = (theme) => {
+					root.dataset.theme = theme;
+					button?.setAttribute('aria-pressed', String(theme === 'dark'));
+				};
+
+				button?.addEventListener('click', () => {
+					const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+					localStorage.setItem(key, next);
+					apply(next);
+				});
+
+				apply(root.dataset.theme || 'light');
+			})();
+		</script>
 	</body>
 </html>

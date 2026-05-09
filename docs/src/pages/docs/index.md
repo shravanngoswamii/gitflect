@@ -18,7 +18,7 @@ Linux and macOS terminals.
 ## First run
 
 ```sh
-curl -fsSL https://raw.githubusercontent.com/shravangoswami/gitflect/main/install.sh | sh
+curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
 Bash:

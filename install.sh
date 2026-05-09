@@ -2,7 +2,7 @@
 set -eu
 
 project_name="gitflect"
-default_repo="shravangoswami/gitflect"
+default_repo="shravanngoswamii/gitflect"
 
 repo="${GITFLECT_REPO:-$default_repo}"
 version="${GITFLECT_VERSION:-latest}"
