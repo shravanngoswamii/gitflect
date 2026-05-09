@@ -209,16 +209,64 @@ fn command_complete(args: &[String]) -> ExitCode {
 }
 
 fn command_config(args: &[String]) -> ExitCode {
-    if args
-        .iter()
-        .any(|arg| arg == "--print-default" || arg == "default")
-    {
-        print!("{}", Config::default_config_text());
-        return ExitCode::SUCCESS;
-    }
+    let subcommand = args.first().map(String::as_str).unwrap_or("");
 
-    eprintln!("usage: gitflect config --print-default");
-    ExitCode::from(2)
+    match subcommand {
+        "path" => {
+            match config::config_path() {
+                Some(path) => println!("{}", path.display()),
+                None => eprintln!("cannot determine config path: HOME not set"),
+            }
+            ExitCode::SUCCESS
+        }
+
+        "init" => {
+            let Some(path) = config::config_path() else {
+                eprintln!("cannot determine config path: HOME not set");
+                return ExitCode::FAILURE;
+            };
+            if path.exists() {
+                println!("config file already exists: {}", path.display());
+                return ExitCode::SUCCESS;
+            }
+            if let Some(parent) = path.parent() {
+                if let Err(error) = std::fs::create_dir_all(parent) {
+                    eprintln!("failed to create config directory: {error}");
+                    return ExitCode::FAILURE;
+                }
+            }
+            if let Err(error) = std::fs::write(&path, Config::default_config_text()) {
+                eprintln!("failed to write config file: {error}");
+                return ExitCode::FAILURE;
+            }
+            println!("created {}", path.display());
+            ExitCode::SUCCESS
+        }
+
+        "default" | "--print-default" => {
+            print!("{}", Config::default_config_text());
+            ExitCode::SUCCESS
+        }
+
+        "" => {
+            let config = Config::load();
+            let path = config::config_path();
+            match &path {
+                Some(p) if p.exists() => println!("# config file: {}", p.display()),
+                Some(p) => println!("# config file: {} (not found — using defaults)", p.display()),
+                None => println!("# config file: unknown (HOME not set)"),
+            }
+            println!("# environment overrides take precedence over the file\n");
+            print!("{}", config.to_active_config_text());
+            ExitCode::SUCCESS
+        }
+
+        unknown => {
+            eprintln!("unknown config subcommand: {unknown}");
+            eprintln!("usage: gitflect config [path | init | default]");
+            ExitCode::from(2)
+        }
+    }
 }
 
 fn print_help() {
@@ -230,15 +278,19 @@ USAGE:
   gitflect status [--json] [--shell bash|zsh|raw|plain]
   gitflect init bash|zsh
   gitflect complete --position N -- WORDS...
-  gitflect config --print-default
+  gitflect config                      Show active configuration
+  gitflect config path                 Print config file path
+  gitflect config init                 Create config file from defaults
+  gitflect config default              Print default config template
 
 SHELL SETUP:
   Bash: eval "$(gitflect init bash)"
   Zsh:  eval "$(gitflect init zsh)"
 
 CONFIG:
-  Read from $GITFLECT_CONFIG or ~/.config/gitflect/config.
-  Environment variables such as GITFLECT_ENABLE_STASH=true override the file.
+  File: $GITFLECT_CONFIG or $XDG_CONFIG_HOME/gitflect/config or ~/.config/gitflect/config
+  Env vars with GITFLECT_ prefix override the file (e.g. GITFLECT_ENABLE_STASH=true)
+  Run 'gitflect config init' to create the file, 'gitflect config' to see active values.
 "#,
         env!("CARGO_PKG_VERSION")
     );

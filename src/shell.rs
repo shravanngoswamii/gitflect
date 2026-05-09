@@ -44,7 +44,7 @@ fn init_bash(binary: &str) -> String {
     format!(
         r#"# gitflect Bash integration
 __gitflect_bin={binary}
-__gitflect_original_ps1=${{PS1-}}
+__gitflect_original_ps1="${{__gitflect_original_ps1:-${{PS1-}}}}"
 __gitflect_current_ps1=
 
 __gitflect_apply_segment() {{
@@ -76,10 +76,6 @@ __gitflect_prompt() {{
     local __gitflect_base
     local __gitflect_rendered
     local __gitflect_segment
-
-    if [[ -n "${{__gitflect_current_ps1+x}}" && "$PS1" != "$__gitflect_current_ps1" ]]; then
-        __gitflect_original_ps1="$PS1"
-    fi
 
     if [[ "${{GITFLECT_REPLACE_PROMPT:-0}}" == "1" ]]; then
         __gitflect_rendered="$("$__gitflect_bin" prompt --shell bash --last-status "$__gitflect_status")"
@@ -118,7 +114,7 @@ fn init_zsh(binary: &str) -> String {
     format!(
         r#"# gitflect Zsh integration
 __gitflect_bin={binary}
-typeset -g __gitflect_original_prompt="${{PROMPT-}}"
+typeset -g __gitflect_original_prompt="${{__gitflect_original_prompt:-${{PROMPT-}}}}"
 typeset -g __gitflect_current_prompt=
 
 __gitflect_apply_segment() {{
@@ -150,10 +146,6 @@ __gitflect_precmd() {{
     local __gitflect_base
     local __gitflect_rendered
     local __gitflect_segment
-
-    if [[ -n "${{__gitflect_current_prompt+x}}" && "$PROMPT" != "$__gitflect_current_prompt" ]]; then
-        __gitflect_original_prompt="$PROMPT"
-    fi
 
     if [[ "${{GITFLECT_REPLACE_PROMPT:-0}}" == "1" ]]; then
         __gitflect_rendered="$("$__gitflect_bin" prompt --shell zsh --last-status "$__gitflect_status")"

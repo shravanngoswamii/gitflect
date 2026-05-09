@@ -186,6 +186,81 @@ path_status_separator=
 "#
     }
 
+    pub fn to_active_config_text(&self) -> String {
+        let theme = match self.theme {
+            Theme::Posh => "posh",
+            Theme::Plain => "plain",
+            Theme::Nerd => "nerd",
+        };
+        let color = match self.color_mode {
+            ColorMode::Auto => "auto",
+            ColorMode::Always => "always",
+            ColorMode::Never => "never",
+        };
+        let branch_display = match self.branch_display {
+            BranchDivergenceDisplay::Full => "full",
+            BranchDivergenceDisplay::Compact => "compact",
+            BranchDivergenceDisplay::Minimal => "minimal",
+        };
+        let untracked = match self.untracked_mode {
+            UntrackedMode::No => "no",
+            UntrackedMode::Normal => "normal",
+            UntrackedMode::All => "all",
+        };
+        let mut text = format!(
+            "theme={theme}\n\
+             color={color}\n\
+             enable_prompt_status={}\n\
+             enable_file_status={}\n\
+             enable_stash_status={}\n\
+             untracked_files={untracked}\n\
+             show_zero_counts={}\n\
+             status_first={}\n\
+             abbreviate_home={}\n\
+             abbreviate_git_dir={}\n\
+             branch_display={branch_display}\n\
+             branch_name_limit={}\n\
+             prompt_suffix={}\n",
+            self.enable_prompt_status,
+            self.enable_file_status,
+            self.enable_stash_status,
+            self.show_status_when_zero,
+            self.status_first,
+            self.abbreviate_home,
+            self.abbreviate_git_dir,
+            self.branch_name_limit,
+            self.prompt_suffix,
+        );
+        if let Some(prefix) = &self.prompt_prefix {
+            text.push_str(&format!("prompt_prefix={prefix}\n"));
+        }
+        text.push_str(&format!(
+            "path_status_separator={}\n\
+             show_exit_status={}\n\
+             symbol_added={}\n\
+             symbol_modified={}\n\
+             symbol_removed={}\n\
+             symbol_conflicted={}\n\
+             symbol_ahead={}\n\
+             symbol_behind={}\n\
+             symbol_identical={}\n\
+             symbol_diverged={}\n\
+             symbol_gone={}\n",
+            self.path_status_separator,
+            self.show_exit_status,
+            self.symbols.added,
+            self.symbols.modified,
+            self.symbols.removed,
+            self.symbols.conflicted,
+            self.symbols.branch_ahead,
+            self.symbols.branch_behind,
+            self.symbols.branch_identical,
+            self.symbols.branch_diverged,
+            self.symbols.branch_gone,
+        ));
+        text
+    }
+
     fn apply_env(&mut self) {
         self.apply_env_key("GITFLECT_THEME", "theme");
         self.apply_env_key("GITFLECT_COLOR", "color");
@@ -380,7 +455,7 @@ path_status_separator=
     }
 }
 
-fn config_path() -> Option<PathBuf> {
+pub fn config_path() -> Option<PathBuf> {
     if let Some(path) = env::var_os("GITFLECT_CONFIG") {
         return Some(PathBuf::from(path));
     }
