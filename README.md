@@ -1,40 +1,52 @@
-# gitflect
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/public/logo-dark.svg">
+    <img src="docs/public/logo-light.svg" alt="gitflect" width="240">
+  </picture>
+</p>
 
-A fast Git-aware prompt for Bash and Zsh on Linux and macOS. Compact repository segment, no shell framework required.
+<p align="center">
+  Fast Git context for Bash and Zsh. Branch, status, and counts right in the prompt.
+</p>
+
+<p align="center">
+  <a href="https://shravangoswami.com/gitflect/">Docs</a>
+  &nbsp;·&nbsp;
+  <a href="CHANGELOG.md">Changelog</a>
+  &nbsp;·&nbsp;
+  <a href=".github/CONTRIBUTING.md">Contributing</a>
+  &nbsp;·&nbsp;
+  <a href="LICENSE">MIT</a>
+</p>
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
-**[Documentation →](https://shravangoswami.com/gitflect/)**
+The install script detects your shell, places the binary on `PATH`, and wires up the prompt hook. No manual shell setup needed.
 
-## Quick reference
+## Usage
 
 ```sh
-gitflect status          # print current Git segment
-gitflect config          # show active configuration
-gitflect config init     # create config file from defaults
-gitflect config path     # print config file path
+gitflect status              # print current Git segment
+gitflect config              # show active configuration
+gitflect config set theme plain   # change a setting from the CLI
 gitflect --version
 ```
 
 Prompt segment example:
 
-```text
+```
 user@host ~/project [main ≡ +1 ~0 -0 | !2 ~1 -0 ?]
 ```
 
 ## Development
 
 ```sh
+git config core.hooksPath .githooks   # enable pre-commit fmt check (once per clone)
 cargo test
-cargo fmt --all -- --check
 cargo clippy --all-targets -- -D warnings
-cargo build --release && cp target/release/gitflect ~/.local/bin/gitflect
+cargo build --release
 ```
 
-Pre-commit hooks run `cargo fmt` automatically before each commit. Activate once per clone:
-
-```sh
-git config core.hooksPath .githooks
-```
+Issues at [github.com/shravanngoswamii/gitflect/issues](https://github.com/shravanngoswamii/gitflect/issues).
