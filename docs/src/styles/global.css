@@ -680,6 +680,27 @@ pre {
 	line-height: 1.55;
 }
 
+.attribution-section {
+	padding-block: 1rem 2rem;
+}
+
+.attribution {
+	margin: 0 auto;
+	max-width: 640px;
+	text-align: center;
+	color: var(--muted);
+	font-size: 0.9rem;
+}
+
+.attribution a {
+	color: var(--accent);
+	text-decoration: none;
+}
+
+.attribution a:hover {
+	text-decoration: underline;
+}
+
 .site-footer {
 	max-width: 1120px;
 	margin: 2rem auto 0;
