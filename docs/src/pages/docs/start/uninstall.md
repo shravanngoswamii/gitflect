@@ -48,6 +48,18 @@ Open your shell profile (`~/.bashrc` or `~/.zshrc`) and delete the lines between
 exec $SHELL
 ```
 
+## Configuration files
+
+The uninstall script and manual steps above do **not** remove the config file. This is intentional — if you reinstall gitflect later, your settings are preserved automatically.
+
+To remove the config as well:
+
+```sh
+rm -rf ~/.config/gitflect
+```
+
+If you used `$XDG_CONFIG_HOME`, remove `$XDG_CONFIG_HOME/gitflect` instead.
+
 ## Verify removal
 
 ```sh

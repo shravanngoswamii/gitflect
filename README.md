@@ -28,6 +28,13 @@ user@host ~/project [main ≡ +1 ~0 -0 | !2 ~1 -0 ?]
 
 ```sh
 cargo test
+cargo fmt --all -- --check
 cargo clippy --all-targets -- -D warnings
 cargo build --release && cp target/release/gitflect ~/.local/bin/gitflect
+```
+
+Pre-commit hooks run `cargo fmt` automatically before each commit. Activate once per clone:
+
+```sh
+git config core.hooksPath .githooks
 ```

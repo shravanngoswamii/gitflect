@@ -253,7 +253,10 @@ fn command_config(args: &[String]) -> ExitCode {
             let path = config::config_path();
             match &path {
                 Some(p) if p.exists() => println!("# config file: {}", p.display()),
-                Some(p) => println!("# config file: {} (not found — using defaults)", p.display()),
+                Some(p) => println!(
+                    "# config file: {} (not found — using defaults)",
+                    p.display()
+                ),
                 None => println!("# config file: unknown (HOME not set)"),
             }
             println!("# environment overrides take precedence over the file\n");
