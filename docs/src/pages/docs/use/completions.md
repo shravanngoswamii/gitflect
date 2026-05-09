@@ -1,4 +1,5 @@
 ---
+layout: ../../../layouts/DocsLayout.astro
 title: Completions
 description: Git-aware completions for Bash and Zsh.
 ---

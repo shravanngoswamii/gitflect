@@ -1,4 +1,8 @@
-# gitflect docs
+---
+layout: ../../layouts/DocsLayout.astro
+title: Documentation
+description: Install, configure, and understand gitflect.
+---
 
 `gitflect` is a small native prompt helper that shows Git state without taking
 over your shell.
@@ -33,11 +37,11 @@ Use `gitflect status --no-color` to inspect the rendered Git segment directly.
 
 ## Contents
 
-- [Install](start/install.md)
-- [Shell setup](start/shell-setup.md)
-- [Update](start/update.md)
-- [Prompt segments](use/prompt-segments.md)
-- [Configuration](use/configuration.md)
-- [Completions](use/completions.md)
-- [Commands](reference/commands.md)
-- [Release artifacts](reference/release-artifacts.md)
+- [Install](/docs/start/install/)
+- [Shell setup](/docs/start/shell-setup/)
+- [Update](/docs/start/update/)
+- [Prompt segments](/docs/use/prompt-segments/)
+- [Configuration](/docs/use/configuration/)
+- [Completions](/docs/use/completions/)
+- [Commands](/docs/reference/commands/)
+- [Release artifacts](/docs/reference/release-artifacts/)

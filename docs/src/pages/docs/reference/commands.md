@@ -1,4 +1,5 @@
 ---
+layout: ../../../layouts/DocsLayout.astro
 title: Commands
 description: Command reference for gitflect.
 ---

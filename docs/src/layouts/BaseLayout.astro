@@ -1,0 +1,55 @@
+---
+import '../styles/global.css';
+import { quickLinks } from '../data/navigation';
+
+interface Props {
+	title?: string;
+	description?: string;
+	bodyClass?: string;
+}
+
+const {
+	title = 'gitflect',
+	description = 'Fast Git-aware prompt context for Bash and Zsh.',
+	bodyClass = '',
+} = Astro.props;
+const pageTitle = title === 'gitflect' ? 'gitflect' : `${title} | gitflect`;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="description" content={description} />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<title>{pageTitle}</title>
+	</head>
+	<body class={bodyClass}>
+		<header class="site-header">
+			<a class="brand" href="/" aria-label="gitflect home">
+				<span class="brand-mark" aria-hidden="true"></span>
+				<span>gitflect</span>
+			</a>
+			<nav class="top-nav" aria-label="Main navigation">
+				<a href="/docs/">Docs</a>
+				<a href="/docs/start/install/">Install</a>
+				<a href="https://github.com/shravangoswami/gitflect">GitHub</a>
+			</nav>
+		</header>
+		<main>
+			<slot />
+		</main>
+		<footer class="site-footer">
+			<div>
+				<strong>gitflect</strong>
+				<span>Fast Git context for Unix shells.</span>
+			</div>
+			<nav aria-label="Footer navigation">
+				{quickLinks.slice(0, 4).map((link) => <a href={link.href}>{link.title}</a>)}
+			</nav>
+		</footer>
+	</body>
+</html>

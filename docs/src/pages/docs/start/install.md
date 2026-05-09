@@ -1,4 +1,5 @@
 ---
+layout: ../../../layouts/DocsLayout.astro
 title: Install
 description: Install gitflect from GitHub releases.
 ---

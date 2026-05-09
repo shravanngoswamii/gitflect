@@ -1,4 +1,5 @@
 ---
+layout: ../../../layouts/DocsLayout.astro
 title: Shell setup
 description: Enable gitflect in Bash or Zsh.
 ---

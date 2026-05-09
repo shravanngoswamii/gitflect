@@ -1,4 +1,5 @@
 ---
+layout: ../../../layouts/DocsLayout.astro
 title: Update
 description: Update gitflect from GitHub releases.
 ---

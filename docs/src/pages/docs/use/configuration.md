@@ -1,4 +1,5 @@
 ---
+layout: ../../../layouts/DocsLayout.astro
 title: Configuration
 description: Configure rendering, status behavior, and symbols.
 ---

@@ -1,4 +1,5 @@
 ---
+layout: ../../../layouts/DocsLayout.astro
 title: Prompt segments
 description: Understand the Git status segment rendered by gitflect.
 ---

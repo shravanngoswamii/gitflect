@@ -1,4 +1,5 @@
 ---
+layout: ../../../layouts/DocsLayout.astro
 title: Release artifacts
 description: GitHub release files used by the installer.
 ---
