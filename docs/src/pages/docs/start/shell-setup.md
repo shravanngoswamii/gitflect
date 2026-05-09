@@ -4,6 +4,8 @@ title: Shell setup
 description: Enable gitflect in Bash or Zsh.
 ---
 
+<div class="callout note">If you installed gitflect with the install script, shell integration is already configured automatically. This page is only needed for manual installs.</div>
+
 `gitflect init` prints shell code. Add the matching line to your shell startup file after your normal prompt has been configured.
 
 ## Bash
@@ -54,14 +56,3 @@ eval "$(gitflect init zsh)"
 ```
 
 Close the temporary shell to return to your normal setup.
-
-## Git command aliases
-
-Completions are attached to `git` by default. Add aliases with `GITFLECT_GIT_COMMANDS`.
-
-```sh
-export GITFLECT_GIT_COMMANDS="git g"
-eval "$(gitflect init zsh)"
-```
-
-This makes `gitflect` provide completions for both `git` and `g`.

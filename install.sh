@@ -13,6 +13,7 @@ profile_path=""
 modify_profile="1"
 
 profile_updated=""
+is_update=""
 
 info() {
     printf '%s\n' "  $*"
@@ -226,7 +227,11 @@ update_profile() {
 
     mkdir -p "$(profile_dirname "$profile")"
     if [ -f "$profile" ] && grep -q "# >>> gitflect >>>" "$profile"; then
-        info "shell integration already present in $profile"
+        if [ -n "$is_update" ]; then
+            info "shell integration already up to date in $profile"
+        else
+            info "shell integration already present in $profile"
+        fi
         profile_updated="$profile"
         return 0
     fi
@@ -248,17 +253,23 @@ update_profile() {
 
 print_summary() {
     printf '\n'
-    printf 'gitflect is installed.\n'
+    if [ -n "$is_update" ]; then
+        printf 'gitflect is updated.\n'
+    else
+        printf 'gitflect is installed.\n'
+    fi
     printf '\n'
     printf '  Binary:   %s\n' "$bin_dir/$project_name"
 
     if [ -n "$profile_updated" ]; then
         printf '  Profile:  %s\n' "$profile_updated"
         printf '\n'
-        printf 'Reload your shell to activate it:\n'
-        printf '\n'
-        printf '  source %s\n' "$profile_updated"
-        printf '\n'
+        if [ -z "$is_update" ]; then
+            printf 'Reload your shell to activate it:\n'
+            printf '\n'
+            printf '  source %s\n' "$profile_updated"
+            printf '\n'
+        fi
     else
         printf '\n'
         printf 'Shell profile was not modified. To activate gitflect manually:\n'
@@ -286,6 +297,10 @@ print_summary() {
     printf '\n'
 }
 
+if [ -f "$bin_dir/$project_name" ]; then
+    is_update="1"
+fi
+
 target="$(detect_target)"
 asset="${project_name}-${target}.tar.gz"
 url="$(release_url "$asset")"
@@ -312,7 +327,11 @@ rm -f "$test_file"
 
 cp "$binary_path" "$bin_dir/$project_name"
 chmod 755 "$bin_dir/$project_name"
-info "binary installed to $bin_dir/$project_name"
+if [ -n "$is_update" ]; then
+    info "binary updated at $bin_dir/$project_name"
+else
+    info "binary installed to $bin_dir/$project_name"
+fi
 
 selected_shell="$(detect_shell)"
 update_profile "$selected_shell"

@@ -61,3 +61,5 @@ Outside a Git repository, `gitflect status` prints nothing. Inside a repository,
 ```text
 [main ≡ +1 ~2 -0 !]
 ```
+
+<div class="callout note">Shell integration is added to your profile automatically by the install script. Manual setup is only needed if you placed the binary on <code>PATH</code> yourself — see <a href="/docs/start/shell-setup/">Shell setup</a>.</div>

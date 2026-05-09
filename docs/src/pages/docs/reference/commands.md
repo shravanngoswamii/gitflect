@@ -30,31 +30,66 @@ gitflect status --json --no-color
 
 ## `gitflect init`
 
-Prints shell integration code.
+Prints shell integration code for the selected shell.
 
 ```sh
 gitflect init bash
 gitflect init zsh
 ```
 
-The generated code installs the prompt hook and Git completion function for the selected shell.
-
-## `gitflect complete`
-
-Prints completion candidates.
-
-```sh
-gitflect complete --shell bash --position N -- WORDS...
-```
-
-Shells call this command from their completion functions. It can also be used directly while debugging completion behavior.
+<div class="callout note">The install script runs this automatically. Manual use is only needed for custom setups — see <a href="/docs/start/shell-setup/">Shell setup</a>.</div>
 
 ## `gitflect config`
 
-Prints the default config.
+Shows all active settings (file + environment overrides combined), with valid options shown inline.
 
 ```sh
-gitflect config --print-default
+gitflect config
+```
+
+### `gitflect config get <key>`
+
+Print the current value of a single key.
+
+```sh
+gitflect config get theme
+# posh  # posh, plain, nerd
+```
+
+### `gitflect config set <key> <value>`
+
+Write a setting to the config file from the command line.
+
+```sh
+gitflect config set theme plain
+gitflect config set color never
+gitflect config set enable_stash_status true
+```
+
+If the key is unknown or the value is invalid, an error is printed with the list of valid options.
+
+### `gitflect config path`
+
+Print the path to the config file.
+
+```sh
+gitflect config path
+```
+
+### `gitflect config init`
+
+Create the config file from defaults if it does not already exist.
+
+```sh
+gitflect config init
+```
+
+### `gitflect config default`
+
+Print the default config template without creating a file.
+
+```sh
+gitflect config default
 ```
 
 ## `gitflect help`

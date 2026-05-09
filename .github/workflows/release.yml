@@ -127,12 +127,13 @@ jobs:
           fi
 
       - name: Upload artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: gitflect-${{ matrix.target }}
           path: |
             gitflect-${{ matrix.target }}.tar.gz
             gitflect-${{ matrix.target }}.tar.gz.sha256
+          compression-level: 0
 
   publish:
     name: Publish GitHub release
@@ -146,7 +147,7 @@ jobs:
         uses: actions/checkout@v6
 
       - name: Download artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v7
         with:
           path: dist
           merge-multiple: true

@@ -1109,6 +1109,85 @@ pre {
 	color: var(--text);
 }
 
+.prose blockquote {
+	margin: 1.2rem 0;
+	padding: 0.75rem 1rem;
+	border-left: 3px solid var(--accent);
+	border-radius: 0 6px 6px 0;
+	background: color-mix(in srgb, var(--accent) 6%, transparent);
+	color: var(--muted);
+	font-style: normal;
+}
+
+.prose blockquote p {
+	margin: 0;
+}
+
+.callout {
+	margin: 1.5rem 0;
+	padding: 0.8rem 1rem;
+	border-radius: 6px;
+	border: 1px solid var(--line);
+	border-left-width: 3px;
+	font-size: 0.875rem;
+	line-height: 1.65;
+	color: var(--muted);
+}
+
+.callout::before {
+	display: block;
+	margin-bottom: 0.3rem;
+	font-family: ui-monospace, 'Cascadia Code', 'Fira Code', monospace;
+	font-size: 0.68rem;
+	font-weight: 700;
+	text-transform: uppercase;
+	letter-spacing: 0.09em;
+}
+
+.callout.note {
+	border-left-color: var(--accent);
+	background: color-mix(in srgb, var(--accent) 5%, var(--surface));
+}
+
+.callout.note::before {
+	content: 'ⓘ  note';
+	color: var(--accent);
+}
+
+.callout.warning {
+	border-left-color: var(--amber);
+	background: color-mix(in srgb, var(--amber) 5%, var(--surface));
+}
+
+.callout.warning::before {
+	content: '⚠  warning';
+	color: var(--amber);
+}
+
+.callout p {
+	margin: 0;
+}
+
+.callout strong {
+	color: var(--text);
+	font-weight: 650;
+}
+
+.callout code {
+	background: var(--code-bg);
+	color: var(--code-text);
+	padding: 0.1em 0.35em;
+	border-radius: 4px;
+	font-size: 0.82em;
+	border: 1px solid var(--line);
+	font-family: ui-monospace, monospace;
+}
+
+.callout a {
+	color: var(--accent-strong);
+	font-weight: 600;
+}
+
 @media (max-width: 980px) {
 	.site-header {
 		flex-wrap: wrap;

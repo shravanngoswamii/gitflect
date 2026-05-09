@@ -50,7 +50,7 @@ exec $SHELL
 
 ## Configuration files
 
-The uninstall script and manual steps above do **not** remove the config file. This is intentional — if you reinstall gitflect later, your settings are preserved automatically.
+<div class="callout note">The uninstall script does <strong>not</strong> remove the config file. If you reinstall gitflect later, your settings are preserved automatically.</div>
 
 To remove the config as well:
 

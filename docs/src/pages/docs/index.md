@@ -21,17 +21,7 @@ Linux and macOS terminals.
 curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
-Bash:
-
-```sh
-eval "$(gitflect init bash)"
-```
-
-Zsh:
-
-```sh
-eval "$(gitflect init zsh)"
-```
+The install script downloads the binary, puts it on your `PATH`, and wires up the shell integration automatically. No manual shell setup needed.
 
 Use `gitflect status --no-color` to inspect the rendered Git segment directly.
 
@@ -42,6 +32,5 @@ Use `gitflect status --no-color` to inspect the rendered Git segment directly.
 - [Update](start/update/)
 - [Prompt segments](use/prompt-segments/)
 - [Configuration](use/configuration/)
-- [Completions](use/completions/)
 - [Commands](reference/commands/)
 - [Release artifacts](reference/release-artifacts/)
