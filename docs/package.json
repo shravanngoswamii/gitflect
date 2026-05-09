@@ -18,8 +18,9 @@
     "astro": "^6.3.1"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "asciinema-player": "^3.15.1",
     "pagefind": "^1.5.2",
-    "@pagefind/default-ui": "^1.5.2"
+    "satori": "^0.26.0"
   }
 }

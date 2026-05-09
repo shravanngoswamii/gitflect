@@ -1,5 +1,4 @@
 ---
-import '@pagefind/default-ui/css/ui.css';
 ---
 
 <div class="site-search" data-search data-pagefind-ignore>
@@ -18,105 +17,162 @@ import '@pagefind/default-ui/css/ui.css';
 	<dialog class="search-modal" data-search-modal aria-label="Search documentation">
 		<div class="search-panel">
 			<header>
-				<strong>Search docs</strong>
-				<button type="button" data-search-close aria-label="Close search">Esc</button>
+				<div class="search-input-wrap">
+					<svg class="search-icon" aria-hidden="true" viewBox="0 0 24 24">
+						<path d="m20 20-4.35-4.35m2.35-5.15a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" />
+					</svg>
+					<input
+						type="search"
+						class="search-input"
+						data-search-input
+						placeholder="Search docs…"
+						autocomplete="off"
+						spellcheck="false"
+						aria-label="Search query"
+					/>
+					<button class="search-clear" type="button" data-search-clear aria-label="Clear search" hidden>✕</button>
+				</div>
+				<button type="button" class="search-esc" data-search-close aria-label="Close search">Esc</button>
 			</header>
 			{import.meta.env.DEV && (
 				<p class="search-dev-notice">
-					Search index is not available in the dev server -- run <code>npm run build</code> then <code>npm run preview</code> to use search.
+					Search index is not available in the dev server — run <code>npm run build</code> then <code>npm run preview</code> to use search.
 				</p>
 			)}
-			<div id="pagefind-search" data-pagefind-target></div>
+			<div class="search-results" data-search-results role="region" aria-live="polite" aria-label="Search results"></div>
 		</div>
 	</dialog>
 </div>
 
 <script>
-	import { PagefindUI } from '@pagefind/default-ui';
+	type PFResult = {
+		id: string;
+		data: () => Promise<{
+			url: string;
+			meta: { title?: string; image?: string };
+			excerpt: string;
+			sub_results: Array<{ url: string; title: string; excerpt: string }>;
+		}>;
+	};
 
 	const root = document.querySelector('[data-search]');
 	const openButton = root?.querySelector('[data-search-open]');
-	const modal = root?.querySelector('[data-search-modal]');
+	const modal = root?.querySelector('[data-search-modal]') as HTMLDialogElement | null;
 	const closeButton = root?.querySelector('[data-search-close]');
+	const input = root?.querySelector('[data-search-input]') as HTMLInputElement | null;
+	const clearButton = root?.querySelector('[data-search-clear]') as HTMLButtonElement | null;
+	const resultsEl = root?.querySelector('[data-search-results]') as HTMLElement | null;
+
 	const base = import.meta.env.BASE_URL || '/';
 	const normalizedBase = base.endsWith('/') ? base.slice(0, -1) : base;
-	let searchUi: InstanceType<typeof PagefindUI> | undefined;
 
 	const withBase = (url: string) => {
 		if (!url || /^(https?:|mailto:|#)/.test(url)) return url;
 		if (normalizedBase && url.startsWith(normalizedBase)) return url;
-		return `${normalizedBase}${url.startsWith('/') ? url : `/${url}`}` || url;
+		return `${normalizedBase}${url.startsWith('/') ? url : `/${url}`}`;
 	};
 
-	const rewriteResult = (result: Record<string, any>) => {
-		const next = {
-			...result,
-			url: withBase(result.url),
-			meta: { ...result.meta },
-			sub_results: result.sub_results?.map((item: Record<string, any>) => ({ ...item, url: withBase(item.url) })),
-		};
-		if (next.meta.url) next.meta.url = withBase(next.meta.url);
-		return next;
+	let pagefind: {
+		init: () => Promise<void>;
+		search: (q: string) => Promise<{ results: PFResult[] }>;
+	} | null = null;
+	let debounceTimer: ReturnType<typeof setTimeout>;
+
+	const loadPagefind = async () => {
+		if (pagefind) return;
+		if (import.meta.env.DEV) return;
+		try {
+			const pf = await import(/* @vite-ignore */ `${normalizedBase}/pagefind/pagefind.js`);
+			await (pf as { init: () => Promise<void> }).init();
+			pagefind = pf as typeof pagefind;
+		} catch {
+			console.warn('[gitflect] Could not load pagefind index.');
+		}
 	};
 
-	const ensureSearch = () => {
-		if (searchUi) return;
-		if (import.meta.env.DEV) {
-			console.warn(
-				'[gitflect] Pagefind search is not available in the dev server.\n' +
-				'Run `astro build` then `astro preview` to enable search.',
-			);
+	const renderResults = (items: Array<{ url: string; title: string; excerpt: string; isTop: boolean }>) => {
+		if (!resultsEl) return;
+		if (!items.length) {
+			resultsEl.innerHTML = '<p class="search-empty">No results found.</p>';
 			return;
 		}
-		try {
-			searchUi = new PagefindUI({
-				element: '#pagefind-search',
-				bundlePath: `${normalizedBase}/pagefind/`,
-				showImages: false,
-				showSubResults: true,
-				excerptLength: 24,
-				resetStyles: false,
-				processResult: rewriteResult,
-			});
-		} catch (err) {
-			console.warn('[gitflect] Failed to initialise Pagefind search:', err);
-		}
+		resultsEl.innerHTML = items
+			.map((r) => `<a class="search-result${r.isTop ? ' search-result--top' : ''}" href="${r.url}">
+	<span class="search-result-title">${r.title}</span>
+	<span class="search-result-excerpt">${r.excerpt}</span>
+</a>`)
+			.join('');
 	};
 
-	const openSearch = () => {
-		if (!(modal instanceof HTMLDialogElement)) return;
-		ensureSearch();
+	const runSearch = async (query: string) => {
+		if (!resultsEl) return;
+		const q = query.trim();
+		if (!q) {
+			resultsEl.innerHTML = '';
+			return;
+		}
+		if (!pagefind) {
+			if (!import.meta.env.DEV) {
+				resultsEl.innerHTML = '<p class="search-empty">Search index not loaded yet…</p>';
+			}
+			return;
+		}
+		const { results } = await pagefind.search(q);
+		const items: Array<{ url: string; title: string; excerpt: string; isTop: boolean }> = [];
+		for (const r of results.slice(0, 10)) {
+			const data = await r.data();
+			const topUrl = withBase(data.url);
+			if (data.sub_results?.length) {
+				for (const sub of data.sub_results.slice(0, 3)) {
+					items.push({ url: withBase(sub.url), title: sub.title, excerpt: sub.excerpt, isTop: false });
+				}
+			} else {
+				items.push({ url: topUrl, title: data.meta.title ?? '', excerpt: data.excerpt, isTop: true });
+			}
+		}
+		renderResults(items);
+	};
+
+	const openSearch = async () => {
+		if (!modal) return;
+		await loadPagefind();
 		modal.showModal();
-		requestAnimationFrame(() => modal.querySelector('input')?.focus());
+		requestAnimationFrame(() => input?.focus());
 	};
 
 	const closeSearch = () => {
-		if (modal instanceof HTMLDialogElement && modal.open) modal.close();
+		if (modal?.open) modal.close();
 		if (openButton instanceof HTMLElement) openButton.focus();
 	};
 
-	const followResult = (event: Event) => {
-		const target = event.target;
-		if (!(target instanceof Element)) return;
-		if (target.closest('a, button, input')) return;
-		const result = target.closest('.pagefind-ui__result, .pagefind-ui__result-nested');
-		const link = result?.querySelector('.pagefind-ui__result-link');
-		if (link instanceof HTMLAnchorElement && link.href) {
-			window.location.href = link.href;
-		}
+	const clearSearch = () => {
+		if (input) input.value = '';
+		if (clearButton) clearButton.hidden = true;
+		if (resultsEl) resultsEl.innerHTML = '';
+		input?.focus();
 	};
+
+	input?.addEventListener('input', () => {
+		const val = input.value;
+		if (clearButton) clearButton.hidden = !val;
+		clearTimeout(debounceTimer);
+		debounceTimer = setTimeout(() => runSearch(val), 200);
+	});
 
 	openButton?.addEventListener('click', openSearch);
 	closeButton?.addEventListener('click', closeSearch);
+	clearButton?.addEventListener('click', clearSearch);
 	document.addEventListener('gitflect:open-search', openSearch);
 	modal?.addEventListener('click', (event) => {
 		if (event.target === modal) closeSearch();
 	});
-	modal?.addEventListener('click', followResult);
 	document.addEventListener('keydown', (event) => {
 		if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') {
 			event.preventDefault();
 			openSearch();
+		}
+		if (event.key === 'Escape' && modal?.open) {
+			closeSearch();
 		}
 	});
 </script>

@@ -19,7 +19,7 @@ const {
 	bodyClass = '',
 } = Astro.props;
 const pageTitle = title === 'gitflect' ? 'gitflect' : `${title} | gitflect`;
-const sponsorUrl = 'https://github.com/sponsors/shravanngoswamii';
+const githubSponsorsUrl = 'https://github.com/sponsors/shravanngoswamii';
 const currentYear = new Date().getFullYear();
 ---
 
@@ -30,6 +30,14 @@ const currentYear = new Date().getFullYear();
 		<meta name="viewport" content="width=device-width" />
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={pageTitle} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={new URL(withBase('/og.png'), Astro.site ?? 'https://shravanngoswamii.github.io').href} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={pageTitle} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={new URL(withBase('/og.png'), Astro.site ?? 'https://shravanngoswamii.github.io').href} />
 		<link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
 		<title>{pageTitle}</title>
 		<script is:inline>
@@ -51,9 +59,9 @@ const currentYear = new Date().getFullYear();
 			<nav class="top-nav" aria-label="Main navigation">
 				<a href={withBase('/docs/')}>Docs</a>
 				<a href={withBase('/docs/start/install/')}>Install</a>
-				<a class="sponsor-link" href={sponsorUrl} target="_blank" rel="noopener noreferrer">
+				<a class="nav-heart" href={githubSponsorsUrl} target="_blank" rel="noopener noreferrer">
 					<HeartIcon />
-					Sponsor
+					Support
 				</a>
 				<a class="icon-link" href="https://github.com/shravanngoswamii/gitflect" aria-label="GitHub repository" target="_blank" rel="noopener noreferrer">
 					<GitHubIcon />
@@ -93,9 +101,9 @@ const currentYear = new Date().getFullYear();
 						<GitHubIcon />
 						GitHub
 					</a>
-					<a class="sponsor-link" href={sponsorUrl} target="_blank" rel="noopener noreferrer">
+					<a class="nav-heart" href={githubSponsorsUrl} target="_blank" rel="noopener noreferrer">
 						<HeartIcon />
-						Sponsor
+						Support
 					</a>
 				</div>
 			</div>
@@ -116,9 +124,9 @@ const currentYear = new Date().getFullYear();
 					{quickLinks.slice(0, 4).map((link) => <a href={withBase(link.href)}>{link.title}</a>)}
 				</nav>
 				<div class="footer-actions">
-					<a class="sponsor-link" href={sponsorUrl} target="_blank" rel="noopener noreferrer">
+					<a class="nav-heart" href={githubSponsorsUrl} target="_blank" rel="noopener noreferrer">
 						<HeartIcon />
-						Sponsor
+						Support
 					</a>
 					<a class="icon-link" href="https://github.com/shravanngoswamii/gitflect" target="_blank" rel="noopener noreferrer">
 						<GitHubIcon />
