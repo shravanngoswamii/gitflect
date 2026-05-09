@@ -4,17 +4,19 @@ on:
   issue_comment:
     types:
       - created
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
   trigger:
-    if: github.event.comment.body == '/release'
+    if: github.event_name == 'workflow_dispatch' || github.event.comment.body == '/release'
     runs-on: ubuntu-latest
 
     steps:
       - name: Check write permission
+        if: github.event_name == 'issue_comment'
         uses: actions/github-script@v8
         with:
           script: |
@@ -53,7 +55,7 @@ jobs:
           git push origin "${{ steps.version.outputs.tag }}"
 
       - name: React with rocket
-        if: success()
+        if: success() && github.event_name == 'issue_comment'
         uses: actions/github-script@v8
         with:
           script: |
