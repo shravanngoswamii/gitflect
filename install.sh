@@ -12,8 +12,10 @@ shell_name="auto"
 profile_path=""
 modify_profile="1"
 
+profile_updated=""
+
 info() {
-    printf '%s\n' "info: $*"
+    printf '%s\n' "  $*"
 }
 
 warn() {
@@ -53,7 +55,7 @@ Environment:
   GITFLECT_REPO       Default GitHub repository
   GITFLECT_VERSION    Default release version
   GITFLECT_BASE_URL   Default release asset base URL
-  BIN_DIR                     Default install directory
+  BIN_DIR             Default install directory
 USAGE
 }
 
@@ -224,7 +226,8 @@ update_profile() {
 
     mkdir -p "$(profile_dirname "$profile")"
     if [ -f "$profile" ] && grep -q "# >>> gitflect >>>" "$profile"; then
-        info "profile already has gitflect integration: $profile"
+        info "shell integration already present in $profile"
+        profile_updated="$profile"
         return 0
     fi
 
@@ -233,13 +236,54 @@ update_profile() {
     {
         printf '\n'
         printf '%s\n' '# >>> gitflect >>>'
-        printf '%s\n' '# Added by the gitflect installer.'
+        printf '%s\n' '# Added by the gitflect installer. Remove with: uninstall.sh'
         printf 'export PATH="%s:$PATH"\n' "$escaped_bin_dir"
         printf 'eval "$(gitflect init %s)"\n' "$selected_shell"
         printf '%s\n' '# <<< gitflect <<<'
     } >> "$profile"
 
-    info "added gitflect integration to $profile"
+    profile_updated="$profile"
+    info "shell integration added to $profile"
+}
+
+print_summary() {
+    printf '\n'
+    printf 'gitflect is installed.\n'
+    printf '\n'
+    printf '  Binary:   %s\n' "$bin_dir/$project_name"
+
+    if [ -n "$profile_updated" ]; then
+        printf '  Profile:  %s\n' "$profile_updated"
+        printf '\n'
+        printf 'Reload your shell to activate it:\n'
+        printf '\n'
+        printf '  source %s\n' "$profile_updated"
+        printf '\n'
+    else
+        printf '\n'
+        printf 'Shell profile was not modified. To activate gitflect manually:\n'
+        printf '\n'
+        printf '  export PATH="%s:$PATH"\n' "$bin_dir"
+        printf '  eval "$(gitflect init bash)"   # or: gitflect init zsh\n'
+        printf '\n'
+    fi
+
+    printf 'Verify the installation:\n'
+    printf '\n'
+    printf '  gitflect --version\n'
+    printf '  gitflect status\n'
+    printf '\n'
+    printf 'To remove gitflect:\n'
+    printf '\n'
+    printf '  curl -fsSL https://raw.githubusercontent.com/%s/main/uninstall.sh | sh\n' "$repo"
+    printf '\n'
+    printf 'Or manually:\n'
+    printf '\n'
+    printf '  rm -f %s/%s\n' "$bin_dir" "$project_name"
+    if [ -n "$profile_updated" ]; then
+        printf '  # Remove the gitflect block from %s\n' "$profile_updated"
+    fi
+    printf '\n'
 }
 
 target="$(detect_target)"
@@ -253,7 +297,7 @@ archive="$tmp_dir/$asset"
 info "downloading $url"
 download "$archive" "$url"
 
-info "extracting $asset"
+info "extracting archive"
 tar -xzf "$archive" -C "$tmp_dir"
 
 binary_path="$tmp_dir/${project_name}-${target}/${project_name}"
@@ -268,13 +312,13 @@ rm -f "$test_file"
 
 cp "$binary_path" "$bin_dir/$project_name"
 chmod 755 "$bin_dir/$project_name"
-info "installed $project_name to $bin_dir/$project_name"
+info "binary installed to $bin_dir/$project_name"
 
 selected_shell="$(detect_shell)"
 update_profile "$selected_shell"
 
 if ! has "$project_name"; then
-    warn "$bin_dir is not on PATH in this shell yet; restart the shell or run: export PATH=\"$bin_dir:\$PATH\""
+    warn "$bin_dir is not on PATH yet — see reload instructions below"
 fi
 
-info "done"
+print_summary

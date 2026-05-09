@@ -63,7 +63,7 @@ jobs:
         run: cargo test --locked
 
       - name: Check installer syntax
-        run: sh -n install.sh
+        run: sh -n install.sh && sh -n uninstall.sh
 
   build:
     name: Build ${{ matrix.target }}
@@ -161,3 +161,4 @@ jobs:
             dist/*.tar.gz
             dist/*.sha256
             install.sh
+            uninstall.sh
