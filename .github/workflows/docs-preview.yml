@@ -1,0 +1,93 @@
+name: Docs preview
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, closed]
+    paths:
+      - "docs/**"
+      - ".github/workflows/docs-preview.yml"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  build-preview:
+    if: github.event.action != 'closed' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pull request
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: docs/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: docs
+
+      - name: Build docs
+        run: npm run build
+        working-directory: docs
+        env:
+          BASE_PATH: /gitflect/pr-previews/${{ github.event.pull_request.number }}/
+
+      - name: Deploy preview
+        uses: JamesIves/github-pages-deploy-action@v4
+        with:
+          branch: gh-pages
+          folder: docs/dist
+          target-folder: pr-previews/${{ github.event.pull_request.number }}
+          clean: true
+
+      - name: Comment preview URL
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const previewUrl = `https://shravanngoswamii.github.io/gitflect/pr-previews/${context.payload.pull_request.number}/`;
+            const marker = '<!-- gitflect-docs-preview -->';
+            const body = `${marker}\nDocs preview: ${previewUrl}`;
+            const comments = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+            });
+            const existing = comments.data.find((comment) => comment.body?.includes(marker));
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.payload.pull_request.number,
+                body,
+              });
+            }
+
+  cleanup-preview:
+    if: github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout previews
+        uses: actions/checkout@v6
+        with:
+          ref: gh-pages
+
+      - name: Remove preview
+        run: |
+          git rm -r --ignore-unmatch pr-previews/${{ github.event.pull_request.number }}
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -m "Remove docs preview for PR #${{ github.event.pull_request.number }}" || true
+          git push

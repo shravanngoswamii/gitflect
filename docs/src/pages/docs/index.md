@@ -37,11 +37,11 @@ Use `gitflect status --no-color` to inspect the rendered Git segment directly.
 
 ## Contents
 
-- [Install](/docs/start/install/)
-- [Shell setup](/docs/start/shell-setup/)
-- [Update](/docs/start/update/)
-- [Prompt segments](/docs/use/prompt-segments/)
-- [Configuration](/docs/use/configuration/)
-- [Completions](/docs/use/completions/)
-- [Commands](/docs/reference/commands/)
-- [Release artifacts](/docs/reference/release-artifacts/)
+- [Install](start/install/)
+- [Shell setup](start/shell-setup/)
+- [Update](start/update/)
+- [Prompt segments](use/prompt-segments/)
+- [Configuration](use/configuration/)
+- [Completions](use/completions/)
+- [Commands](reference/commands/)
+- [Release artifacts](reference/release-artifacts/)

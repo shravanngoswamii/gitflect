@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PromptCast from '../components/PromptCast.astro';
+import { withBase } from '../lib/paths';
 ---
 
 <BaseLayout
@@ -9,7 +10,6 @@ import PromptCast from '../components/PromptCast.astro';
 >
 	<section class="hero">
 		<div>
-			<p class="eyebrow">Rust Git prompt for Bash and Zsh</p>
 			<h1>Git context, kept close to your prompt.</h1>
 			<p class="hero-copy">
 				<code>gitflect</code> adds a compact repository segment to the prompt you already
@@ -17,8 +17,8 @@ import PromptCast from '../components/PromptCast.astro';
 				operations, and completions without becoming a shell framework.
 			</p>
 			<div class="actions">
-				<a class="button" href="/docs/start/install/">Install gitflect</a>
-				<a class="button secondary" href="/docs/">Read the docs</a>
+				<a class="button" href={withBase('/docs/start/install/')}>Install gitflect</a>
+				<a class="button secondary" href={withBase('/docs/')}>Read the docs</a>
 			</div>
 		</div>
 		<PromptCast />
@@ -54,8 +54,12 @@ import PromptCast from '../components/PromptCast.astro';
 			<p>Install from GitHub Releases, then load the shell integration.</p>
 		</div>
 		<div class="install-strip">
+			<div>
+				<strong>GitHub release installer</strong>
+				<span>Fetches the right archive, installs into your user bin path, and leaves shell setup explicit.</span>
+			</div>
 			<pre><code>curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh</code></pre>
-			<a class="button secondary" href="/docs/start/shell-setup/">Shell setup</a>
+			<a class="button secondary" href={withBase('/docs/start/shell-setup/')}>Shell setup</a>
 		</div>
 	</section>
 
@@ -65,15 +69,15 @@ import PromptCast from '../components/PromptCast.astro';
 			<p>Focused pages for installation, prompt behavior, configuration, completions, and releases.</p>
 		</div>
 		<div class="docs-grid">
-			<a class="doc-link" href="/docs/start/install/">
+			<a class="doc-link" href={withBase('/docs/start/install/')}>
 				<h3>Install</h3>
 				<p>Download the right release archive and place `gitflect` on your path.</p>
 			</a>
-			<a class="doc-link" href="/docs/use/prompt-segments/">
+			<a class="doc-link" href={withBase('/docs/use/prompt-segments/')}>
 				<h3>Prompt segments</h3>
 				<p>Understand branch symbols, dirty counts, upstream state, and operation markers.</p>
 			</a>
-			<a class="doc-link" href="/docs/use/configuration/">
+			<a class="doc-link" href={withBase('/docs/use/configuration/')}>
 				<h3>Configuration</h3>
 				<p>Tune colors, symbols, status behavior, branch display, and large repository handling.</p>
 			</a>

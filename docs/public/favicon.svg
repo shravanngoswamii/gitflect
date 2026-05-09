@@ -1,9 +1,15 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" role="img" aria-label="gitflect">
-  <rect width="128" height="128" rx="28" fill="#101413"/>
-  <path d="M34 72h32c16 0 28-12 28-28" fill="none" stroke="#f4f1ea" stroke-width="11" stroke-linecap="round"/>
-  <path d="M66 72c16 0 28 12 28 28" fill="none" stroke="#6ee7b7" stroke-width="11" stroke-linecap="round"/>
-  <circle cx="34" cy="72" r="12" fill="#f4f1ea"/>
+  <style>
+    .main { stroke: #101413; }
+    .dot { fill: #101413; }
+    @media (prefers-color-scheme: dark) {
+      .main { stroke: #f4f1ea; }
+      .dot { fill: #f4f1ea; }
+    }
+  </style>
+  <path class="main" d="M34 72h32c16 0 28-12 28-28" fill="none" stroke-width="11" stroke-linecap="round"/>
+  <path d="M66 72c16 0 28 12 28 28" fill="none" stroke="#14724b" stroke-width="11" stroke-linecap="round"/>
+  <circle class="dot" cx="34" cy="72" r="12"/>
   <circle cx="94" cy="42" r="12" fill="#eab308"/>
-  <circle cx="94" cy="100" r="12" fill="#6ee7b7"/>
-  <path d="M46 36h22" stroke="#6ee7b7" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="94" cy="100" r="12" fill="#14724b"/>
 </svg>

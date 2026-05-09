@@ -1,11 +1,14 @@
 ---
 import BaseLayout from './BaseLayout.astro';
+import TableOfContents from '../components/TableOfContents.astro';
 import { navGroups } from '../data/navigation';
+import { withBase } from '../lib/paths';
 
-const { frontmatter } = Astro.props;
+const { frontmatter, headings } = Astro.props;
 const title = frontmatter.title ?? 'Docs';
 const description = frontmatter.description ?? 'gitflect documentation.';
-const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+const basePath = import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL.replace(/\/$/, '');
+const currentPath = Astro.url.pathname.replace(basePath, '').replace(/\/$/, '') || '/';
 
 const isCurrent = (href: string) => {
 	const normalized = href.replace(/\/$/, '') || '/';
@@ -16,7 +19,7 @@ const isCurrent = (href: string) => {
 <BaseLayout title={title} description={description} bodyClass="docs-page">
 	<div class="docs-shell">
 		<aside class="docs-sidebar" aria-label="Documentation navigation" data-pagefind-ignore>
-			<a class="docs-home" href="/docs/">Documentation</a>
+			<a class="docs-home" href={withBase('/docs/')}>Documentation</a>
 			{
 				navGroups.map((group) => (
 					<section>
@@ -24,7 +27,7 @@ const isCurrent = (href: string) => {
 						<ul>
 							{group.items.map((item) => (
 								<li>
-									<a class:list={{ active: isCurrent(item.href) }} href={item.href}>
+									<a class:list={{ active: isCurrent(item.href) }} href={withBase(item.href)}>
 										{item.title}
 									</a>
 								</li>
@@ -34,9 +37,35 @@ const isCurrent = (href: string) => {
 				))
 			}
 		</aside>
+		<div class="docs-mobile-panels" data-pagefind-ignore>
+			<details class="docs-panel">
+				<summary>Documentation</summary>
+				<nav aria-label="Documentation navigation">
+					{
+						navGroups.map((group) => (
+							<section>
+								<h2>{group.title}</h2>
+								<ul>
+									{group.items.map((item) => (
+										<li>
+											<a class:list={{ active: isCurrent(item.href) }} href={withBase(item.href)}>
+												{item.title}
+											</a>
+										</li>
+									))}
+								</ul>
+							</section>
+						))
+					}
+				</nav>
+			</details>
+			<details class="docs-panel">
+				<summary>On this page</summary>
+				<TableOfContents headings={headings} />
+			</details>
+		</div>
 		<article class="docs-content" data-pagefind-body>
 			<header class="docs-title">
-				<p>Documentation</p>
 				<h1>{title}</h1>
 				{description && <span>{description}</span>}
 			</header>
@@ -44,5 +73,6 @@ const isCurrent = (href: string) => {
 				<slot />
 			</div>
 		</article>
+		<TableOfContents headings={headings} />
 	</div>
 </BaseLayout>
