@@ -38,6 +38,14 @@ jobs:
         env:
           BASE_PATH: /gitflect/pr-previews/${{ github.event.pull_request.number }}/
 
+      - name: Post-process HTML links
+        uses: shravanngoswamii/html-link-action@v1
+        with:
+          site-dir: docs/dist
+          noopener: true
+          noreferrer: true
+          external-target-blank: true
+
       - name: Deploy preview
         uses: JamesIves/github-pages-deploy-action@v4
         with:

@@ -34,6 +34,14 @@ jobs:
         env:
           BASE_PATH: /gitflect/
 
+      - name: Post-process HTML links
+        uses: shravanngoswamii/html-link-action@v1
+        with:
+          site-dir: docs/dist
+          noopener: true
+          noreferrer: true
+          external-target-blank: true
+
       - name: Publish docs
         uses: peaceiris/actions-gh-pages@v3
         with:

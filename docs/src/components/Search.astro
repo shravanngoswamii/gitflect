@@ -82,7 +82,10 @@
 		if (pagefind) return;
 		if (import.meta.env.DEV) return;
 		try {
-			const pf = await import(/* @vite-ignore */ `${normalizedBase}/pagefind/pagefind.js`);
+			// new Function bypasses Vite's import wrapping, which otherwise leaves
+			// __VITE_PRELOAD__ as an unresolved identifier and throws a ReferenceError
+			const load = new Function('url', 'return import(url)') as (url: string) => Promise<unknown>;
+			const pf = await load(`${normalizedBase}/pagefind/pagefind.js`);
 			await (pf as { init: () => Promise<void> }).init();
 			pagefind = pf as typeof pagefind;
 		} catch {

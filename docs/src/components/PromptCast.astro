@@ -13,16 +13,26 @@ import 'asciinema-player/dist/bundle/asciinema-player.css';
 		const normalizedBase = base.endsWith('/') ? base.slice(0, -1) : base;
 		const castPath = `${normalizedBase}/casts/gitflect-prompt.cast`;
 
-		create(castPath, target, {
+		const player = create(castPath, target, {
 			autoplay: true,
 			preload: true,
 			loop: false,
 			speed: 1.0,
 			idleTimeLimit: 1.2,
 			cols: 82,
-			rows: 16,
+			rows: 10,
 			fit: 'width',
 			theme: 'asciinema',
+		}) as unknown as {
+			addEventListener: (event: string, cb: () => void) => void;
+			seek: (pos: number) => Promise<void>;
+			play: () => Promise<void>;
+		};
+
+		player.addEventListener('ended', () => {
+			setTimeout(() => {
+				player.seek(0).then(() => player.play());
+			}, 2000);
 		});
 	}
 </script>
