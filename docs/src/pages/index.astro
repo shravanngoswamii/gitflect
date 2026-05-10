@@ -2,11 +2,72 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PromptCast from '../components/PromptCast.astro';
 import { withBase } from '../lib/paths';
+
+const siteOrigin = Astro.site ?? Astro.url;
+const appUrl = new URL(withBase('/'), siteOrigin).href;
+const installUrl = new URL(withBase('/docs/start/install/'), siteOrigin).href;
+const configUrl = new URL(withBase('/docs/use/configuration/'), siteOrigin).href;
+
+const structuredData = [
+	{
+		'@context': 'https://schema.org',
+		'@type': 'SoftwareApplication',
+		name: 'gitflect',
+		applicationCategory: 'DeveloperApplication',
+		operatingSystem: 'Linux, macOS',
+		description: 'A fast Git-aware prompt helper for Bash and Zsh.',
+		url: appUrl,
+		downloadUrl: 'https://github.com/shravanngoswamii/gitflect/releases',
+		author: {
+			'@type': 'Person',
+			name: 'Shravan Goswami',
+		},
+	},
+	{
+		'@context': 'https://schema.org',
+		'@type': 'FAQPage',
+		mainEntity: [
+			{
+				'@type': 'Question',
+				name: 'What is gitflect?',
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: 'gitflect is a native CLI that adds compact Git repository status to Bash and Zsh prompts.',
+				},
+			},
+			{
+				'@type': 'Question',
+				name: 'Which shells and operating systems are supported?',
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: 'gitflect supports Bash and Zsh on Linux and macOS.',
+				},
+			},
+			{
+				'@type': 'Question',
+				name: 'How do I install gitflect?',
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: `Install from ${installUrl}.`,
+				},
+			},
+			{
+				'@type': 'Question',
+				name: 'Can I customize symbols and behavior?',
+				acceptedAnswer: {
+					'@type': 'Answer',
+					text: `Yes. Configuration options are documented at ${configUrl}.`,
+				},
+			},
+		],
+	},
+];
 ---
 
 <BaseLayout
 	title="gitflect"
 	description="A fast Git-aware prompt helper for Bash and Zsh on Linux and macOS."
+	structuredData={structuredData}
 >
 	<section class="hero">
 		<h1>Git context, kept close to your prompt.</h1>
@@ -94,5 +155,26 @@ import { withBase } from '../lib/paths';
 		<p class="attribution">
 			gitflect's prompt format and status symbols are directly inspired by <a href="https://github.com/dahlbyk/posh-git" target="_blank">posh-git</a> — the Git integration for PowerShell — adapted for Bash and Zsh on Linux and macOS.
 		</p>
+	</section>
+
+	<section class="section">
+		<div class="section-header">
+			<h2>FAQ</h2>
+			<p>Quick answers for search engines and humans.</p>
+		</div>
+		<div class="feature-grid">
+			<div class="feature">
+				<h3>What is gitflect?</h3>
+				<p>A native CLI that shows Git branch and status context in your existing shell prompt.</p>
+			</div>
+			<div class="feature">
+				<h3>Which shells are supported?</h3>
+				<p>Bash and Zsh on Linux and macOS.</p>
+			</div>
+			<div class="feature">
+				<h3>Can I customize it?</h3>
+				<p>Yes. You can tune colors, symbols, and behavior with config keys.</p>
+			</div>
+		</div>
 	</section>
 </BaseLayout>

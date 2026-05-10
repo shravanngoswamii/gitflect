@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { withBase } from '../lib/paths';
 ---
 
-<BaseLayout title="404" description="Page not found.">
+<BaseLayout title="404" description="Page not found." noindex={true}>
 	<div class="not-found">
 		<div class="not-found-inner">
 			<p class="not-found-eyebrow">error</p>

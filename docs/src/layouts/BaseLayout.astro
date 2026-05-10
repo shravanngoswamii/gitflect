@@ -11,16 +11,45 @@ interface Props {
 	title?: string;
 	description?: string;
 	bodyClass?: string;
+	noindex?: boolean;
+	canonical?: string;
+	ogType?: 'website' | 'article';
+	structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
 const {
 	title = 'gitflect',
 	description = 'Fast Git-aware prompt context for Bash and Zsh.',
 	bodyClass = '',
+	noindex = false,
+	canonical,
+	ogType = 'website',
+	structuredData,
 } = Astro.props;
 const pageTitle = title === 'gitflect' ? 'gitflect' : `${title} | gitflect`;
 const githubSponsorsUrl = 'https://github.com/sponsors/shravanngoswamii';
 const currentYear = new Date().getFullYear();
+const canonicalUrl = (() => {
+	const candidate = canonical ?? Astro.url.href;
+	const url = new URL(candidate, Astro.site ?? Astro.url);
+	url.search = '';
+	url.hash = '';
+	return url.href;
+})();
+const ogImageUrl = new URL(withBase('/og.png'), Astro.site ?? Astro.url).href;
+const defaultStructuredData = {
+	'@context': 'https://schema.org',
+	'@type': 'WebPage',
+	name: pageTitle,
+	description,
+	url: canonicalUrl,
+};
+const extraStructuredData = Array.isArray(structuredData)
+	? structuredData
+	: structuredData
+		? [structuredData]
+		: [];
+const jsonLdItems = [defaultStructuredData, ...extraStructuredData];
 ---
 
 <!doctype html>
@@ -29,16 +58,24 @@ const currentYear = new Date().getFullYear();
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="description" content={description} />
+		<meta name="robots" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
+		<meta name="googlebot" content={noindex ? 'noindex, nofollow' : 'index, follow'} />
 		<meta name="generator" content={Astro.generator} />
-		<meta property="og:type" content="website" />
+		<link rel="canonical" href={canonicalUrl} />
+		<meta property="og:type" content={ogType} />
+		<meta property="og:site_name" content="gitflect" />
+		<meta property="og:url" content={canonicalUrl} />
 		<meta property="og:title" content={pageTitle} />
 		<meta property="og:description" content={description} />
-		<meta property="og:image" content={new URL(withBase('/og.png'), Astro.site ?? 'https://shravanngoswamii.github.io').href} />
+		<meta property="og:image" content={ogImageUrl} />
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content={pageTitle} />
 		<meta name="twitter:description" content={description} />
-		<meta name="twitter:image" content={new URL(withBase('/og.png'), Astro.site ?? 'https://shravanngoswamii.github.io').href} />
+		<meta name="twitter:image" content={ogImageUrl} />
+		<meta name="theme-color" content="#14724b" media="(prefers-color-scheme: light)" />
+		<meta name="theme-color" content="#101413" media="(prefers-color-scheme: dark)" />
 		<link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+		{jsonLdItems.map((item) => <script type="application/ld+json" set:html={JSON.stringify(item)}></script>)}
 		<title>{pageTitle}</title>
 		<script is:inline>
 			(() => {
