@@ -2,6 +2,9 @@ mod config;
 mod git;
 mod render;
 mod shell;
+mod terminal;
+mod tui;
+mod wizard;
 
 use config::{ColorMode, Config};
 use render::PromptOptions;
@@ -21,6 +24,11 @@ fn main() -> ExitCode {
         "status" => command_status(&args[1..]),
         "init" => command_init(&args[1..]),
         "config" => command_config(&args[1..]),
+        "theme" => command_theme(&args[1..]),
+        "settings" => {
+            tui::run_settings();
+            ExitCode::SUCCESS
+        }
         "help" | "-h" | "--help" => {
             print_help();
             ExitCode::SUCCESS
@@ -290,6 +298,212 @@ fn command_config(args: &[String]) -> ExitCode {
     }
 }
 
+fn command_theme(args: &[String]) -> ExitCode {
+    let subcommand = args.first().map(String::as_str).unwrap_or("list");
+
+    match subcommand {
+        "list" => {
+            let cfg = Config::load();
+            let active = match cfg.theme {
+                config::Theme::Posh => "posh",
+                config::Theme::PoshRounded => "posh-rounded",
+                config::Theme::Plain => "plain",
+                config::Theme::Nerd => "nerd",
+                config::Theme::Emoji => "emoji",
+                config::Theme::Minimal => "minimal",
+                config::Theme::Retro => "retro",
+                config::Theme::Custom => "custom",
+            };
+            let themes: &[(&str, &str)] = &[
+                ("posh", "Unicode symbols, default (↑ ↓ ↕ ≡ ×)"),
+                (
+                    "posh-rounded",
+                    "Like posh but with ( ) status brackets instead of [ ]",
+                ),
+                ("plain", "ASCII text labels (ahead, behind, <>, =, gone)"),
+                ("nerd", "Nerd Font glyph icons (requires patched font)"),
+                ("emoji", "Single-width Unicode symbol set (⬆ ⬇ ⇅ ✔ ✘ ✚ ✎ ✖)"),
+                ("minimal", "Single ASCII char per segment (^ v x = ~ + * -)"),
+                ("retro", "Bracket-style labels (>> << >< -- !! [+] [~] [-])"),
+                ("custom", "Your own symbols  →  gitflect theme set custom"),
+            ];
+            println!("Available themes:");
+            for (name, desc) in themes {
+                if *name == active {
+                    println!("\x1b[32m* {:<13} — {}\x1b[0m", name, desc);
+                } else {
+                    println!("\x1b[90m  {:<13}   {}\x1b[0m", name, desc);
+                }
+            }
+            println!();
+            println!("Use 'gitflect settings' to configure interactively.");
+            ExitCode::SUCCESS
+        }
+
+        "set" => {
+            let Some(name) = args.get(1) else {
+                eprintln!("usage: gitflect theme set <posh|plain|nerd|custom>");
+                return ExitCode::from(2);
+            };
+
+            if name.eq_ignore_ascii_case("custom") {
+                let config = Config::load();
+                match wizard::run_wizard(&config) {
+                    None => ExitCode::SUCCESS,
+                    Some(result) => {
+                        let config_path = match Config::set_in_file("theme", "custom") {
+                            Ok(p) => p,
+                            Err(e) => {
+                                eprintln!("{e}");
+                                return ExitCode::FAILURE;
+                            }
+                        };
+                        for (key, value) in &result.pairs {
+                            if let Err(e) = Config::set_in_file(key, value) {
+                                eprintln!("{e}");
+                                return ExitCode::FAILURE;
+                            }
+                        }
+                        println!("Custom theme saved to {}", config_path.display());
+                        if let Some(theme_name) = result.theme_name {
+                            let pairs_refs: Vec<(&str, &str)> =
+                                result.pairs.iter().map(|(k, v)| (*k, v.as_str())).collect();
+                            match config::save_named_theme(&theme_name, &pairs_refs) {
+                                Ok(path) => {
+                                    println!("Theme '{}' saved to {}", theme_name, path.display())
+                                }
+                                Err(e) => eprintln!("Warning: could not save named theme: {e}"),
+                            }
+                        }
+                        println!("Run `gitflect status` to preview.");
+                        ExitCode::SUCCESS
+                    }
+                }
+            } else {
+                let normalized = name.trim().to_ascii_lowercase();
+                if !matches!(
+                    normalized.as_str(),
+                    "posh" | "plain" | "nerd" | "posh-rounded" | "emoji" | "minimal" | "retro"
+                ) {
+                    eprintln!("unknown theme: {name}");
+                    eprintln!(
+                        "valid themes: posh, posh-rounded, plain, nerd, emoji, minimal, retro, custom"
+                    );
+                    return ExitCode::from(2);
+                }
+                match Config::set_in_file("theme", &normalized) {
+                    Ok(path) => {
+                        println!("theme={normalized} written to {}", path.display());
+                        ExitCode::SUCCESS
+                    }
+                    Err(e) => {
+                        eprintln!("{e}");
+                        ExitCode::FAILURE
+                    }
+                }
+            }
+        }
+
+        "save" => {
+            let Some(name) = args.get(1) else {
+                eprintln!("usage: gitflect theme save <name>");
+                return ExitCode::from(2);
+            };
+            if name.contains('/') || name.contains('\\') || name.contains('.') {
+                eprintln!("invalid theme name: {name}");
+                return ExitCode::from(2);
+            }
+            let cfg = Config::load();
+            let pairs: Vec<(&str, &str)> = vec![
+                ("symbol_ahead", cfg.symbols.branch_ahead.as_str()),
+                ("symbol_behind", cfg.symbols.branch_behind.as_str()),
+                ("symbol_diverged", cfg.symbols.branch_diverged.as_str()),
+                ("symbol_identical", cfg.symbols.branch_identical.as_str()),
+                ("symbol_gone", cfg.symbols.branch_gone.as_str()),
+                ("symbol_added", cfg.symbols.added.as_str()),
+                ("symbol_modified", cfg.symbols.modified.as_str()),
+                ("symbol_removed", cfg.symbols.removed.as_str()),
+                ("symbol_conflicted", cfg.symbols.conflicted.as_str()),
+                ("symbol_working", cfg.symbols.local_working.as_str()),
+                ("symbol_staged", cfg.symbols.local_staged.as_str()),
+                ("symbol_clean", cfg.symbols.local_clean.as_str()),
+                ("before_status", cfg.before_status.as_str()),
+                ("after_status", cfg.after_status.as_str()),
+            ];
+            match config::save_named_theme(name, &pairs) {
+                Ok(path) => {
+                    println!("Theme '{}' saved to {}", name, path.display());
+                    ExitCode::SUCCESS
+                }
+                Err(e) => {
+                    eprintln!("{e}");
+                    ExitCode::FAILURE
+                }
+            }
+        }
+
+        "load" => {
+            let Some(name) = args.get(1) else {
+                eprintln!("usage: gitflect theme load <name>");
+                return ExitCode::from(2);
+            };
+            match config::load_named_theme(name) {
+                Ok(pairs) => {
+                    let config_path = match Config::set_in_file("theme", "custom") {
+                        Ok(p) => p,
+                        Err(e) => {
+                            eprintln!("{e}");
+                            return ExitCode::FAILURE;
+                        }
+                    };
+                    for (k, v) in &pairs {
+                        if let Err(e) = Config::set_in_file(k, v) {
+                            eprintln!("{e}");
+                            return ExitCode::FAILURE;
+                        }
+                    }
+                    println!(
+                        "Loaded theme '{}' as custom to {}",
+                        name,
+                        config_path.display()
+                    );
+                    ExitCode::SUCCESS
+                }
+                Err(e) => {
+                    eprintln!("{e}");
+                    ExitCode::FAILURE
+                }
+            }
+        }
+
+        "saved" => {
+            let themes = config::list_named_themes();
+            if themes.is_empty() {
+                println!("No saved themes. Use 'gitflect theme set custom' to create one.");
+            } else {
+                let dir = config::theme_dir()
+                    .map(|p| p.display().to_string())
+                    .unwrap_or_default();
+                println!("Saved themes in {}:", dir);
+                for name in &themes {
+                    println!("  {name}");
+                }
+            }
+            ExitCode::SUCCESS
+        }
+
+        unknown => {
+            eprintln!("unknown theme subcommand: {unknown}");
+            eprintln!("usage: gitflect theme list");
+            eprintln!("       gitflect theme set <posh|plain|nerd|custom>");
+            eprintln!("       gitflect theme save <name>");
+            eprintln!("       gitflect theme load <name>");
+            eprintln!("       gitflect theme saved");
+            ExitCode::from(2)
+        }
+    }
+}
+
 fn print_help() {
     println!(
         r#"gitflect {}
@@ -298,12 +512,28 @@ USAGE:
   gitflect prompt [--shell bash|zsh|raw|plain] [--status-only] [--last-status N]
   gitflect status [--json] [--shell bash|zsh|raw|plain]
   gitflect init bash|zsh
+  gitflect settings                    Interactive settings explorer (↑↓←→ navigate, s save)
+  gitflect theme list                  List available themes
+  gitflect theme set <name>            Switch theme (posh, plain, nerd, custom…)
+  gitflect theme save <name>           Save current custom symbols as a named theme
+  gitflect theme load <name>           Load a named theme as the active custom theme
+  gitflect theme saved                 List all saved named themes
   gitflect config                      Show active configuration
   gitflect config get <key>            Print the value of a config key
   gitflect config set <key> <value>    Set a config key in the config file
   gitflect config path                 Print config file path
   gitflect config init                 Create config file from defaults
   gitflect config default              Print default config template
+
+THEMES:
+  posh          Unicode symbols — default (↑ ↓ ↕ ≡ ×)
+  posh-rounded  Like posh but with ( ) brackets instead of [ ]
+  plain         ASCII text labels (ahead, behind, <>, =, gone)
+  nerd          Nerd Font glyph icons — requires patched font
+  emoji         Single-width Unicode symbols (⬆ ⬇ ⇅ ✔ ✘ ✚ ✎ ✖)
+  minimal       Single ASCII char per segment (^ v x = ~ + * -)
+  retro         Bracket-style labels (>> << >< [+] [~] [-])
+  custom        Your own symbols — run 'gitflect theme set custom' for an interactive wizard
 
 SHELL SETUP (manual install only — the install script handles this automatically):
   Bash: eval "$(gitflect init bash)"

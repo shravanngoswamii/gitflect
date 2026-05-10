@@ -5,6 +5,33 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-05-11
+
+### Added
+
+- **Custom theme** (`theme=custom`) — a new theme variant that uses fully user-defined symbols. When set, no built-in symbols override user config; all 12 `symbol_*` keys are respected as-is.
+- **`gitflect theme` command** — new top-level command for theme management:
+  - `gitflect theme list` — show all available themes with descriptions.
+  - `gitflect theme set <name>` — switch theme and write to config file.
+  - `gitflect theme set custom` — launch the interactive wizard.
+- **Interactive custom theme wizard** — a full-terminal form that walks through all 12 status segment symbols. Supports arrow-key navigation (↑/↓), inline editing with Backspace, Enter to confirm, and q/Esc to cancel. Shows a review summary before saving.
+- **`posh-rounded` theme** — identical to `posh` but wraps the status block with `( )` instead of `[ ]`.
+- **`emoji` theme** — single-width Unicode symbol set: `⬆ ⬇ ⇅ ✔ ✘ ✚ ✎ ✖ ⚡ ◉`.
+- **`minimal` theme** — ultra-compact single ASCII char per segment: `^ v x = ~ + * - !`.
+- **`retro` theme** — bracket-style labels: `>> << >< -- !! [+] [~] [-] [!]`.
+- **`gitflect settings`** — interactive TUI settings explorer. Browse all 16 config options across five sections (Theme, Status, Branch, Prompt, Appearance) with ↑/↓ navigation. Cycle enum/bool values with ←/→ or Enter; edit text/number fields inline. Press `s` to save; press `q` twice to discard and quit.
+- **Named themes** — save and share custom symbol sets as standalone `.conf` files:
+  - `gitflect theme save <name>` — save current custom symbols to `~/.config/gitflect/themes/<name>.conf`.
+  - `gitflect theme load <name>` — load a named theme file as the active custom theme.
+  - `gitflect theme saved` — list all saved named themes.
+  - The wizard's final step now optionally prompts for a name, saving the theme file in one step.
+- **Go-back from summary in the wizard** — pressing ↑ or Esc on the review screen returns to the symbol editor instead of cancelling.
+- **Bracket fields in wizard** — the custom theme wizard now includes `bracket_open`/`bracket_close` fields that configure `before_status`/`after_status` (e.g. `[`/`]` or `(`/`)`).
+- **Named themes save/restore bracket style** — `gitflect theme save` and `gitflect theme load` now also persist and apply `before_status`/`after_status` alongside all symbol keys.
+- **Active theme highlighted in `gitflect theme list`** — the currently active theme is marked with a `*` in green; other themes are shown dimmed.
+- **Enum picker in `gitflect settings`** — pressing Enter on an enum field (e.g. `theme`, `untracked_files`, `branch_display`) opens an inline option picker; ↑/↓ navigate options, Space/Enter selects, Esc cancels.
+- Docs: new "Themes" section in Configuration with wizard key bindings table and manual `symbol_*` override examples; new `gitflect theme` and `gitflect settings` sections in Commands reference.
+
 ## [0.1.2] - 2026-05-10
 
 ### Added

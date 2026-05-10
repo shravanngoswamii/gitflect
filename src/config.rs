@@ -29,6 +29,11 @@ pub enum Theme {
     Posh,
     Plain,
     Nerd,
+    Custom,
+    PoshRounded,
+    Emoji,
+    Minimal,
+    Retro,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -191,6 +196,11 @@ path_status_separator=
             Theme::Posh => "posh",
             Theme::Plain => "plain",
             Theme::Nerd => "nerd",
+            Theme::Custom => "custom",
+            Theme::PoshRounded => "posh-rounded",
+            Theme::Emoji => "emoji",
+            Theme::Minimal => "minimal",
+            Theme::Retro => "retro",
         };
         let color = match self.color_mode {
             ColorMode::Auto => "auto",
@@ -208,7 +218,7 @@ path_status_separator=
             UntrackedMode::All => "all",
         };
         let mut t = String::new();
-        t.push_str("# theme: posh, plain, nerd\n");
+        t.push_str("# theme: posh, plain, nerd, custom, posh-rounded, emoji, minimal, retro\n");
         t.push_str(&format!("theme={theme}\n"));
         t.push_str("# color: auto, always, never\n");
         t.push_str(&format!("color={color}\n"));
@@ -327,7 +337,7 @@ path_status_separator=
 
     pub fn valid_values_for(key: &str) -> Option<&'static str> {
         match normalize_key(key).as_str() {
-            "theme" => Some("posh, plain, nerd"),
+            "theme" => Some("posh, plain, nerd, custom, posh-rounded, emoji, minimal, retro"),
             "color" | "colormode" => Some("auto, always, never"),
             "branchdisplay" | "branchbehindandaheaddisplay" => Some("full, compact, minimal"),
             "describestyle" => Some("default, contains, branch, describe"),
@@ -580,8 +590,125 @@ path_status_separator=
                 self.symbols.local_working = "●".to_string();
                 self.symbols.local_staged = "●".to_string();
             }
+            Theme::Custom => {
+                // Symbols are left as-is; they come from config file symbol_* keys or env vars.
+            }
+            Theme::PoshRounded => {
+                // Same symbols as Posh, but wraps the status block in ( ) instead of [ ].
+                self.before_status = "(".to_string();
+                self.after_status = ")".to_string();
+            }
+            Theme::Emoji => {
+                self.symbols.branch_ahead = "⬆".to_string();
+                self.symbols.branch_behind = "⬇".to_string();
+                self.symbols.branch_diverged = "⇅".to_string();
+                self.symbols.branch_identical = "✔".to_string();
+                self.symbols.branch_gone = "✘".to_string();
+                self.symbols.added = "✚".to_string();
+                self.symbols.modified = "✎".to_string();
+                self.symbols.removed = "✖".to_string();
+                self.symbols.conflicted = "⚡".to_string();
+                self.symbols.local_working = "✎".to_string();
+                self.symbols.local_staged = "◉".to_string();
+                self.symbols.local_clean = "✔".to_string();
+            }
+            Theme::Minimal => {
+                self.symbols.branch_ahead = "^".to_string();
+                self.symbols.branch_behind = "v".to_string();
+                self.symbols.branch_diverged = "x".to_string();
+                self.symbols.branch_identical = "=".to_string();
+                self.symbols.branch_gone = "~".to_string();
+                self.symbols.added = "+".to_string();
+                self.symbols.modified = "*".to_string();
+                self.symbols.removed = "-".to_string();
+                self.symbols.conflicted = "!".to_string();
+                self.symbols.local_working = "*".to_string();
+                self.symbols.local_staged = "+".to_string();
+                self.symbols.local_clean = String::new();
+            }
+            Theme::Retro => {
+                self.symbols.branch_ahead = ">>".to_string();
+                self.symbols.branch_behind = "<<".to_string();
+                self.symbols.branch_diverged = "><".to_string();
+                self.symbols.branch_identical = "--".to_string();
+                self.symbols.branch_gone = "!!".to_string();
+                self.symbols.added = "[+]".to_string();
+                self.symbols.modified = "[~]".to_string();
+                self.symbols.removed = "[-]".to_string();
+                self.symbols.conflicted = "[!]".to_string();
+                self.symbols.local_working = "[!]".to_string();
+                self.symbols.local_staged = "[~]".to_string();
+                self.symbols.local_clean = String::new();
+            }
         }
     }
+}
+
+pub fn theme_dir() -> Option<PathBuf> {
+    if let Some(path) = env::var_os("XDG_CONFIG_HOME") {
+        return Some(PathBuf::from(path).join("gitflect").join("themes"));
+    }
+    env::var_os("HOME").map(|home| {
+        PathBuf::from(home)
+            .join(".config")
+            .join("gitflect")
+            .join("themes")
+    })
+}
+
+pub fn save_named_theme(name: &str, pairs: &[(&str, &str)]) -> Result<PathBuf, String> {
+    let dir = theme_dir().ok_or_else(|| "cannot determine theme directory".to_string())?;
+    fs::create_dir_all(&dir).map_err(|e| format!("failed to create themes directory: {e}"))?;
+    let path = dir.join(format!("{name}.conf"));
+    let mut content = String::new();
+    for (key, value) in pairs {
+        content.push_str(&format!("{key}={value}\n"));
+    }
+    fs::write(&path, &content).map_err(|e| format!("failed to write theme file: {e}"))?;
+    Ok(path)
+}
+
+pub fn load_named_theme(name: &str) -> Result<Vec<(String, String)>, String> {
+    let dir = theme_dir().ok_or_else(|| "cannot determine theme directory".to_string())?;
+    let path = dir.join(format!("{name}.conf"));
+    let content = fs::read_to_string(&path).map_err(|_| {
+        format!("theme '{name}' not found — use 'gitflect theme saved' to list themes")
+    })?;
+    let mut pairs = Vec::new();
+    for raw_line in content.lines() {
+        let line = raw_line.trim();
+        if line.is_empty() || line.starts_with('#') {
+            continue;
+        }
+        if let Some((k, v)) = line.split_once('=') {
+            pairs.push((k.to_string(), v.to_string()));
+        }
+    }
+    Ok(pairs)
+}
+
+pub fn list_named_themes() -> Vec<String> {
+    let Some(dir) = theme_dir() else {
+        return Vec::new();
+    };
+    let Ok(entries) = fs::read_dir(&dir) else {
+        return Vec::new();
+    };
+    let mut names: Vec<String> = entries
+        .filter_map(|e| e.ok())
+        .filter_map(|e| {
+            let path = e.path();
+            if path.extension().is_some_and(|ext| ext == "conf") {
+                path.file_stem()
+                    .and_then(|s| s.to_str())
+                    .map(str::to_string)
+            } else {
+                None
+            }
+        })
+        .collect();
+    names.sort();
+    names
 }
 
 pub fn config_path() -> Option<PathBuf> {
@@ -649,6 +776,11 @@ fn parse_theme(value: &str) -> Option<Theme> {
         "posh" | "default" => Some(Theme::Posh),
         "plain" | "ascii" => Some(Theme::Plain),
         "nerd" | "nerdfont" | "nerd-font" => Some(Theme::Nerd),
+        "custom" => Some(Theme::Custom),
+        "posh-rounded" | "poshrounded" | "rounded" => Some(Theme::PoshRounded),
+        "emoji" => Some(Theme::Emoji),
+        "minimal" | "minimum" => Some(Theme::Minimal),
+        "retro" | "classic" => Some(Theme::Retro),
         _ => None,
     }
 }
