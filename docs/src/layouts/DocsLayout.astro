@@ -1,27 +1,31 @@
 ---
-import BaseLayout from './BaseLayout.astro';
-import TableOfContents from '../components/TableOfContents.astro';
-import { navGroups } from '../data/navigation';
-import { withBase } from '../lib/paths';
+import BaseLayout from "./BaseLayout.astro";
+import TableOfContents from "../components/TableOfContents.astro";
+import { navGroups } from "../data/navigation";
+import { withBase } from "../lib/paths";
 
 const { frontmatter, headings } = Astro.props;
-const title = frontmatter.title ?? 'Docs';
-const description = frontmatter.description ?? 'gitflect documentation.';
-const basePath = import.meta.env.BASE_URL === '/' ? '' : import.meta.env.BASE_URL.replace(/\/$/, '');
-const currentPath = Astro.url.pathname.replace(basePath, '').replace(/\/$/, '') || '/';
-const docsRootUrl = new URL(withBase('/docs/'), Astro.site ?? Astro.url).href;
+const title = frontmatter.title ?? "Docs";
+const description = frontmatter.description ?? "gitflect documentation.";
+const basePath =
+	import.meta.env.BASE_URL === "/"
+		? ""
+		: import.meta.env.BASE_URL.replace(/\/$/, "");
+const currentPath =
+	Astro.url.pathname.replace(basePath, "").replace(/\/$/, "") || "/";
+const docsRootUrl = new URL(withBase("/docs/"), Astro.site ?? Astro.url).href;
 const breadcrumbItems = [
 	{
-		'@type': 'ListItem',
+		"@type": "ListItem",
 		position: 1,
-		name: 'Documentation',
+		name: "Documentation",
 		item: docsRootUrl,
 	},
 ];
 
-if (currentPath !== '/docs') {
+if (currentPath !== "/docs") {
 	breadcrumbItems.push({
-		'@type': 'ListItem',
+		"@type": "ListItem",
 		position: 2,
 		name: title,
 		item: new URL(Astro.url.pathname, Astro.site ?? Astro.url).href,
@@ -29,13 +33,13 @@ if (currentPath !== '/docs') {
 }
 
 const structuredData = {
-	'@context': 'https://schema.org',
-	'@type': 'BreadcrumbList',
+	"@context": "https://schema.org",
+	"@type": "BreadcrumbList",
 	itemListElement: breadcrumbItems,
 };
 
 const isCurrent = (href: string) => {
-	const normalized = href.replace(/\/$/, '') || '/';
+	const normalized = href.replace(/\/$/, "") || "/";
 	return normalized === currentPath;
 };
 ---

@@ -1,4 +1,4 @@
-declare module 'asciinema-player' {
+declare module "asciinema-player" {
 	interface PlayerOptions {
 		autoplay?: boolean;
 		preload?: boolean;
@@ -7,7 +7,7 @@ declare module 'asciinema-player' {
 		idleTimeLimit?: number;
 		cols?: number;
 		rows?: number;
-		fit?: 'width' | 'height' | 'both' | 'none' | false;
+		fit?: "width" | "height" | "both" | "none" | false;
 		theme?: string;
 		terminalFontSize?: string;
 		terminalFontFamily?: string;

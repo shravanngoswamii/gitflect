@@ -1,28 +1,37 @@
 {
-  "name": "gitflect-docs",
-  "type": "module",
-  "private": true,
-  "version": "0.0.1",
-  "engines": {
-    "node": ">=22.12.0"
-  },
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build && pagefind --site dist",
-    "build:astro": "astro build",
-    "index": "pagefind --site dist",
-    "preview": "astro preview",
-    "astro": "astro"
-  },
-  "dependencies": {
-    "@astrojs/sitemap": "^3.7.2",
-    "astro": "^6.3.1"
-  },
-  "devDependencies": {
-    "@resvg/resvg-js": "^2.6.2",
-    "@types/node": "^25.6.2",
-    "asciinema-player": "^3.15.1",
-    "pagefind": "^1.5.2",
-    "satori": "^0.26.0"
-  }
+	"name": "gitflect-docs",
+	"type": "module",
+	"private": true,
+	"version": "0.0.1",
+	"engines": {
+		"node": ">=22.12.0"
+	},
+	"scripts": {
+		"dev": "astro dev",
+		"build": "astro build && pagefind --site dist",
+		"build:astro": "astro build",
+		"index": "pagefind --site dist",
+		"preview": "astro preview",
+		"astro": "astro",
+		"typecheck": "tsc --noEmit",
+		"check": "biome check .",
+		"check:all": "npm run lint && npm run format:check && npm run typecheck",
+		"format": "biome format --write .",
+		"format:check": "biome format .",
+		"lint": "biome lint .",
+		"lint:fix": "biome check --write ."
+	},
+	"dependencies": {
+		"@astrojs/sitemap": "^3.7.2",
+		"astro": "^6.3.1"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4.15",
+		"@resvg/resvg-js": "^2.6.2",
+		"@types/node": "^25.6.2",
+		"asciinema-player": "^3.15.1",
+		"pagefind": "^1.5.2",
+		"satori": "^0.26.0",
+		"typescript": "^6.0.3"
+	}
 }

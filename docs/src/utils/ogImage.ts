@@ -1,5 +1,5 @@
-import satori, { type Font } from 'satori';
-import { Resvg } from '@resvg/resvg-js';
+import { Resvg } from "@resvg/resvg-js";
+import satori, { type Font } from "satori";
 
 const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
   <path d="M34 72h32c16 0 28-12 28-28" fill="none" stroke="#f5f4f0" stroke-width="11" stroke-linecap="round"/>
@@ -9,15 +9,25 @@ const LOGO_SVG = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
   <circle cx="94" cy="100" r="12" fill="#6ee7b7"/>
 </svg>`;
 
-const LOGO_DATA_URI = `data:image/svg+xml;base64,${Buffer.from(LOGO_SVG).toString('base64')}`;
+const LOGO_DATA_URI = `data:image/svg+xml;base64,${Buffer.from(LOGO_SVG).toString("base64")}`;
 
-async function fetchGoogleFont(family: string, weight: number, text: string): Promise<ArrayBuffer | null> {
+async function fetchGoogleFont(
+	family: string,
+	weight: number,
+	text: string,
+): Promise<ArrayBuffer | null> {
 	try {
 		const css = await fetch(
 			`https://fonts.googleapis.com/css2?family=${family}:wght@${weight}&text=${encodeURIComponent(text)}`,
-			{ headers: { 'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36' } },
+			{
+				headers: {
+					"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36",
+				},
+			},
 		).then((r) => r.text());
-		const match = css.match(/src: url\((.+?)\) format\('(opentype|truetype)'\)/);
+		const match = css.match(
+			/src: url\((.+?)\) format\('(opentype|truetype)'\)/,
+		);
 		if (!match) return null;
 		const res = await fetch(match[1]);
 		return res.ok ? res.arrayBuffer() : null;
@@ -31,104 +41,110 @@ let fontsCache: Font[] | null = null;
 async function loadFonts(text: string): Promise<Font[]> {
 	if (fontsCache) return fontsCache;
 	const [regular, bold] = await Promise.all([
-		fetchGoogleFont('Inter', 400, text),
-		fetchGoogleFont('Inter', 700, text),
+		fetchGoogleFont("Inter", 400, text),
+		fetchGoogleFont("Inter", 700, text),
 	]);
 	const fonts: Font[] = [];
-	if (regular) fonts.push({ name: 'Inter', data: regular, weight: 400, style: 'normal' });
-	if (bold) fonts.push({ name: 'Inter', data: bold, weight: 700, style: 'normal' });
+	if (regular)
+		fonts.push({ name: "Inter", data: regular, weight: 400, style: "normal" });
+	if (bold)
+		fonts.push({ name: "Inter", data: bold, weight: 700, style: "normal" });
 	fontsCache = fonts;
 	return fonts;
 }
 
-export async function generateOgImage(title: string, description?: string): Promise<Uint8Array> {
-	const text = [title, description ?? '', 'gitflect', '—'].join(' ');
+export async function generateOgImage(
+	title: string,
+	description?: string,
+): Promise<Uint8Array> {
+	const text = [title, description ?? "", "gitflect", "—"].join(" ");
 	const fonts = await loadFonts(text);
-	const fontFamily = fonts.length ? 'Inter' : 'sans-serif';
+	const fontFamily = fonts.length ? "Inter" : "sans-serif";
 
 	const svg = await satori(
 		// satori accepts plain VNode objects matching React.ReactNode shape
 		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		({
-			type: 'div',
+		{
+			type: "div",
 			props: {
 				style: {
-					width: '100%',
-					height: '100%',
-					display: 'flex',
-					flexDirection: 'column',
-					justifyContent: 'center',
-					alignItems: 'center',
-					padding: '72px 80px',
-					textAlign: 'center',
-					background: '#101413',
+					width: "100%",
+					height: "100%",
+					display: "flex",
+					flexDirection: "column",
+					justifyContent: "center",
+					alignItems: "center",
+					padding: "72px 80px",
+					textAlign: "center",
+					background: "#101413",
 					fontFamily,
-					position: 'relative',
-					overflow: 'hidden',
+					position: "relative",
+					overflow: "hidden",
 				},
 				children: [
 					{
-						type: 'div',
+						type: "div",
 						props: {
 							style: {
-								position: 'absolute',
-								top: '-160px',
-								left: '50%',
-								marginLeft: '-320px',
-								width: '640px',
-								height: '640px',
-								borderRadius: '50%',
-								background: 'radial-gradient(circle, rgba(110,231,183,0.10) 0%, transparent 65%)',
+								position: "absolute",
+								top: "-160px",
+								left: "50%",
+								marginLeft: "-320px",
+								width: "640px",
+								height: "640px",
+								borderRadius: "50%",
+								background:
+									"radial-gradient(circle, rgba(110,231,183,0.10) 0%, transparent 65%)",
 							},
 						},
 					},
 					{
-						type: 'div',
+						type: "div",
 						props: {
 							style: {
-								display: 'flex',
-								alignItems: 'center',
-								gap: '20px',
-								marginBottom: description ? '36px' : '0',
+								display: "flex",
+								alignItems: "center",
+								gap: "20px",
+								marginBottom: description ? "36px" : "0",
 							},
 							children: [
 								{
-									type: 'img',
+									type: "img",
 									props: {
 										src: LOGO_DATA_URI,
 										width: 90,
 										height: 90,
-										style: { display: 'block' },
+										style: { display: "block" },
 									},
 								},
 								{
-									type: 'span',
+									type: "span",
 									props: {
 										style: {
 											fontSize: 72,
 											fontWeight: 700,
-											color: '#f5f4f0',
+											color: "#f5f4f0",
 											lineHeight: 1,
-											letterSpacing: '-0.02em',
+											letterSpacing: "-0.02em",
 										},
-										children: 'gitflect',
+										children: "gitflect",
 									},
 								},
 							],
 						},
 					},
-					...(title !== 'gitflect'
+					...(title !== "gitflect"
 						? [
 								{
-									type: 'div',
+									type: "div",
 									props: {
 										style: {
 											fontSize: title.length > 40 ? 44 : 52,
 											fontWeight: 700,
-											color: '#f5f4f0',
+											color: "#f5f4f0",
 											lineHeight: 1.2,
-											maxWidth: '860px',
-											marginBottom: description ? '20px' : '0',
+											maxWidth: "860px",
+											marginBottom: description ? "20px" : "0",
 										},
 										children: title,
 									},
@@ -138,13 +154,13 @@ export async function generateOgImage(title: string, description?: string): Prom
 					...(description
 						? [
 								{
-									type: 'div',
+									type: "div",
 									props: {
 										style: {
 											fontSize: 26,
-											color: 'rgba(245,244,240,0.55)',
+											color: "rgba(245,244,240,0.55)",
 											lineHeight: 1.5,
-											maxWidth: '780px',
+											maxWidth: "780px",
 										},
 										children: description,
 									},
@@ -153,7 +169,7 @@ export async function generateOgImage(title: string, description?: string): Prom
 						: []),
 				],
 			},
-		} as Parameters<typeof satori>[0]),
+		} as Parameters<typeof satori>[0],
 		{
 			width: 1200,
 			height: 630,
@@ -161,6 +177,6 @@ export async function generateOgImage(title: string, description?: string): Prom
 		},
 	);
 
-	const resvg = new Resvg(svg, { fitTo: { mode: 'width', value: 1200 } });
+	const resvg = new Resvg(svg, { fitTo: { mode: "width", value: 1200 } });
 	return new Uint8Array(resvg.render().asPng());
 }

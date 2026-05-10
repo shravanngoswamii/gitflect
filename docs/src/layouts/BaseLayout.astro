@@ -1,11 +1,11 @@
 ---
-import '../styles/global.css';
-import { quickLinks } from '../data/navigation';
-import Logo from '../components/Logo.astro';
-import Search from '../components/Search.astro';
-import GitHubIcon from '../components/icons/GitHubIcon.astro';
-import HeartIcon from '../components/icons/HeartIcon.astro';
-import { withBase } from '../lib/paths';
+import "../styles/global.css";
+import { quickLinks } from "../data/navigation";
+import Logo from "../components/Logo.astro";
+import Search from "../components/Search.astro";
+import GitHubIcon from "../components/icons/GitHubIcon.astro";
+import HeartIcon from "../components/icons/HeartIcon.astro";
+import { withBase } from "../lib/paths";
 
 interface Props {
 	title?: string;
@@ -13,33 +13,33 @@ interface Props {
 	bodyClass?: string;
 	noindex?: boolean;
 	canonical?: string;
-	ogType?: 'website' | 'article';
+	ogType?: "website" | "article";
 	structuredData?: Record<string, unknown> | Array<Record<string, unknown>>;
 }
 
 const {
-	title = 'gitflect',
-	description = 'Fast Git-aware prompt context for Bash and Zsh.',
-	bodyClass = '',
+	title = "gitflect",
+	description = "Fast Git-aware prompt context for Bash and Zsh.",
+	bodyClass = "",
 	noindex = false,
 	canonical,
-	ogType = 'website',
+	ogType = "website",
 	structuredData,
 } = Astro.props;
-const pageTitle = title === 'gitflect' ? 'gitflect' : `${title} | gitflect`;
-const githubSponsorsUrl = 'https://github.com/sponsors/shravanngoswamii';
+const pageTitle = title === "gitflect" ? "gitflect" : `${title} | gitflect`;
+const githubSponsorsUrl = "https://github.com/sponsors/shravanngoswamii";
 const currentYear = new Date().getFullYear();
 const canonicalUrl = (() => {
 	const candidate = canonical ?? Astro.url.href;
 	const url = new URL(candidate, Astro.site ?? Astro.url);
-	url.search = '';
-	url.hash = '';
+	url.search = "";
+	url.hash = "";
 	return url.href;
 })();
-const ogImageUrl = new URL(withBase('/og.png'), Astro.site ?? Astro.url).href;
+const ogImageUrl = new URL(withBase("/og.png"), Astro.site ?? Astro.url).href;
 const defaultStructuredData = {
-	'@context': 'https://schema.org',
-	'@type': 'WebPage',
+	"@context": "https://schema.org",
+	"@type": "WebPage",
 	name: pageTitle,
 	description,
 	url: canonicalUrl,

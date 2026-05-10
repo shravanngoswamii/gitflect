@@ -1,61 +1,62 @@
 ---
-import BaseLayout from '../layouts/BaseLayout.astro';
-import PromptCast from '../components/PromptCast.astro';
-import { withBase } from '../lib/paths';
+import BaseLayout from "../layouts/BaseLayout.astro";
+import PromptCast from "../components/PromptCast.astro";
+import { withBase } from "../lib/paths";
 
 const siteOrigin = Astro.site ?? Astro.url;
-const appUrl = new URL(withBase('/'), siteOrigin).href;
-const installUrl = new URL(withBase('/docs/start/install/'), siteOrigin).href;
-const configUrl = new URL(withBase('/docs/use/configuration/'), siteOrigin).href;
+const appUrl = new URL(withBase("/"), siteOrigin).href;
+const installUrl = new URL(withBase("/docs/start/install/"), siteOrigin).href;
+const configUrl = new URL(withBase("/docs/use/configuration/"), siteOrigin)
+	.href;
 
 const structuredData = [
 	{
-		'@context': 'https://schema.org',
-		'@type': 'SoftwareApplication',
-		name: 'gitflect',
-		applicationCategory: 'DeveloperApplication',
-		operatingSystem: 'Linux, macOS',
-		description: 'A fast Git-aware prompt helper for Bash and Zsh.',
+		"@context": "https://schema.org",
+		"@type": "SoftwareApplication",
+		name: "gitflect",
+		applicationCategory: "DeveloperApplication",
+		operatingSystem: "Linux, macOS",
+		description: "A fast Git-aware prompt helper for Bash and Zsh.",
 		url: appUrl,
-		downloadUrl: 'https://github.com/shravanngoswamii/gitflect/releases',
+		downloadUrl: "https://github.com/shravanngoswamii/gitflect/releases",
 		author: {
-			'@type': 'Person',
-			name: 'Shravan Goswami',
+			"@type": "Person",
+			name: "Shravan Goswami",
 		},
 	},
 	{
-		'@context': 'https://schema.org',
-		'@type': 'FAQPage',
+		"@context": "https://schema.org",
+		"@type": "FAQPage",
 		mainEntity: [
 			{
-				'@type': 'Question',
-				name: 'What is gitflect?',
+				"@type": "Question",
+				name: "What is gitflect?",
 				acceptedAnswer: {
-					'@type': 'Answer',
-					text: 'gitflect is a native CLI that adds compact Git repository status to Bash and Zsh prompts.',
+					"@type": "Answer",
+					text: "gitflect is a native CLI that adds compact Git repository status to Bash and Zsh prompts.",
 				},
 			},
 			{
-				'@type': 'Question',
-				name: 'Which shells and operating systems are supported?',
+				"@type": "Question",
+				name: "Which shells and operating systems are supported?",
 				acceptedAnswer: {
-					'@type': 'Answer',
-					text: 'gitflect supports Bash and Zsh on Linux and macOS.',
+					"@type": "Answer",
+					text: "gitflect supports Bash and Zsh on Linux and macOS.",
 				},
 			},
 			{
-				'@type': 'Question',
-				name: 'How do I install gitflect?',
+				"@type": "Question",
+				name: "How do I install gitflect?",
 				acceptedAnswer: {
-					'@type': 'Answer',
+					"@type": "Answer",
 					text: `Install from ${installUrl}.`,
 				},
 			},
 			{
-				'@type': 'Question',
-				name: 'Can I customize symbols and behavior?',
+				"@type": "Question",
+				name: "Can I customize symbols and behavior?",
 				acceptedAnswer: {
-					'@type': 'Answer',
+					"@type": "Answer",
 					text: `Yes. Configuration options are documented at ${configUrl}.`,
 				},
 			},
