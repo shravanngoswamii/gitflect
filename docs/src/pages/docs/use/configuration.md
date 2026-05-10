@@ -16,6 +16,16 @@ gitflect config
 
 Each enumerated setting shows its valid options in a comment on the line above.
 
+## Interactive settings explorer
+
+The fastest way to browse and change settings without opening any files:
+
+```sh
+gitflect settings
+```
+
+Use **↑/↓** to navigate, **←/→** or **Enter** to cycle enum and boolean values, **Enter** to edit text fields inline, and **s** to save all changes at once.
+
 ## Read and write settings from the CLI
 
 Get the current value of any key:
@@ -31,6 +41,14 @@ Set a value without opening the file:
 gitflect config set theme plain
 gitflect config set color never
 gitflect config set enable_stash_status true
+```
+
+To switch themes quickly, you can also use `gitflect theme set`:
+
+```sh
+gitflect theme set plain
+gitflect theme set nerd
+gitflect theme set custom   # launches interactive wizard
 ```
 
 `set` writes to the config file and validates the value against the allowed options. If the key does not exist or the value is invalid, an error is printed with the valid choices.
@@ -67,7 +85,7 @@ Environment variables are applied after the file, so they always win.
 
 | Key | Default | Valid values |
 | :-- | :-- | :-- |
-| `theme` | `posh` | `posh`, `plain`, `nerd` |
+| `theme` | `posh` | `posh`, `posh-rounded`, `plain`, `nerd`, `emoji`, `minimal`, `retro`, `custom` |
 | `color` | `auto` | `auto`, `always`, `never` |
 | `enable_prompt_status` | `true` | `true`, `false` |
 | `enable_file_status` | `true` | `true`, `false` |
@@ -98,6 +116,65 @@ Every key has a `GITFLECT_` env var equivalent:
 | `GITFLECT_STATUS_FIRST` | `status_first` |
 | `GITFLECT_BRANCH_NAME_LIMIT` | `branch_name_limit` |
 | `GITFLECT_DISABLED_REPOSITORIES` | `disabled_repositories` |
+
+## Themes
+
+gitflect ships with four built-in themes:
+
+| Theme | Description |
+| :-- | :-- |
+| `posh` | Unicode symbols — the default, inspired by posh-git (`↑ ↓ ↕ ≡ ×`) |
+| `posh-rounded` | Same as `posh` but wraps the status block with `( )` instead of `[ ]` |
+| `plain` | ASCII text labels only (`ahead`, `behind`, `<>`, `=`, `gone`) |
+| `nerd` | Nerd Font glyph icons — requires a Nerd Font patched terminal font |
+| `emoji` | Single-width Unicode symbols (`⬆ ⬇ ⇅ ✔ ✘ ✚ ✎ ✖`) |
+| `minimal` | Single ASCII char per segment (`^ v x = ~ + * -`) |
+| `retro` | Bracket-style labels (`>> << >< [+] [~] [-] [!]`) |
+| `custom` | Your own symbols — configure interactively with the wizard |
+
+### Custom theme
+
+Run the interactive wizard to define every symbol:
+
+```sh
+gitflect theme set custom
+```
+
+The wizard walks through all 12 status segments one at a time. Use **↑ / ↓** to navigate between fields, **Enter** to confirm a value, and **q** to cancel without saving. Pressing Enter on an empty field keeps the current value.
+
+After you confirm all symbols the wizard shows a summary and asks for confirmation before writing to your config file. It then prompts for an optional name — enter one to save the theme as a shareable file.
+
+#### Save and share themes
+
+Save the current custom symbol set as a named theme:
+
+```sh
+gitflect theme save mytheme
+```
+
+Load it on any machine that has the file:
+
+```sh
+gitflect theme load mytheme
+```
+
+List saved themes:
+
+```sh
+gitflect theme saved
+```
+
+Named theme files live at `~/.config/gitflect/themes/<name>.conf` and contain only `symbol_*` keys, so they are easy to share or version-control.
+
+You can also set individual symbols manually without the wizard:
+
+```ini
+# theme must be custom for symbol_* keys to take effect without override
+theme=custom
+symbol_ahead=▲
+symbol_behind=▼
+symbol_identical=✓
+```
 
 ## Symbols
 

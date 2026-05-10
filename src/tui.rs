@@ -184,6 +184,7 @@ fn adjust_scroll(rows: &[Row], current: usize, scroll: &mut usize, visible: usiz
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn render(
     out: &mut impl Write,
     config: &Config,
