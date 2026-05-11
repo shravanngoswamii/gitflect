@@ -5,6 +5,15 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.4.1] - 2026-05-11
+
+### Changed
+
+- README: logo images now use absolute URLs so they render on crates.io.
+- README: added Crates.io version badge and MIT license badge; links for Changelog and Contributing point to hosted docs and GitHub tab URLs respectively.
+- Docs: added "Update" section to the install page covering both the install script and `cargo install`.
+- Cargo.toml: added `repository`, `homepage`, `documentation`, and `exclude` fields.
+
 ## [0.4.0] - 2026-05-11
 
 ### Changed

@@ -1,7 +1,7 @@
 <p align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/public/logo-dark.svg">
-    <img src="docs/public/logo-light.svg" alt="gitflect" width="240">
+    <source media="(prefers-color-scheme: dark)" srcset="https://shravangoswami.com/gitflect/logo-dark.svg">
+    <img src="https://shravangoswami.com/gitflect/logo-light.svg" alt="gitflect" width="240">
   </picture>
 </p>
 
@@ -10,13 +10,17 @@
 </p>
 
 <p align="center">
+  <a href="https://crates.io/crates/gitflect"><img src="https://img.shields.io/crates/v/gitflect.svg" alt="Crates.io"></a>
+  &nbsp;
+  <a href="https://github.com/shravanngoswamii/gitflect?tab=MIT-1-ov-file"><img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT"></a>
+</p>
+
+<p align="center">
   <a href="https://shravangoswami.com/gitflect/">Docs</a>
   &nbsp;·&nbsp;
-  <a href="CHANGELOG.md">Changelog</a>
+  <a href="https://shravangoswami.com/gitflect/docs/reference/changelog/">Changelog</a>
   &nbsp;·&nbsp;
-  <a href=".github/CONTRIBUTING.md">Contributing</a>
-  &nbsp;·&nbsp;
-  <a href="LICENSE">MIT</a>
+  <a href="https://github.com/shravanngoswamii/gitflect?tab=contributing-ov-file">Contributing</a>
 </p>
 
 ```sh
@@ -41,11 +45,25 @@ echo 'eval "$(gitflect init bash)"' >> ~/.bashrc && exec $SHELL
 echo 'eval "$(gitflect init zsh)"' >> ~/.zshrc && exec $SHELL
 ```
 
+To update:
+
+```sh
+cargo install gitflect
+```
+
 To remove:
 
 ```sh
 cargo uninstall gitflect
 # then remove the eval line from ~/.bashrc or ~/.zshrc
+```
+
+## Update
+
+Rerun the install script to update to the latest release:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
 ## Usage

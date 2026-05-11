@@ -67,12 +67,36 @@ echo 'eval "$(gitflect init bash)"' >> ~/.bashrc && exec $SHELL
 echo 'eval "$(gitflect init zsh)"' >> ~/.zshrc && exec $SHELL
 ```
 
+To update:
+
+```sh
+cargo install gitflect
+```
+
 To remove:
 
 ```sh
 cargo uninstall gitflect
 # then remove the eval line from ~/.bashrc or ~/.zshrc
 ```
+
+## Update
+
+### Install script
+
+Rerun the install script — it overwrites the existing binary with the latest release:
+
+```sh
+curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
+```
+
+### Via Cargo
+
+```sh
+cargo install gitflect
+```
+
+`cargo install` replaces the existing binary in `~/.cargo/bin` with the latest version from crates.io. No shell profile changes are needed.
 
 ## Verify
 
