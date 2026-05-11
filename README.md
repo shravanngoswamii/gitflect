@@ -25,6 +25,29 @@ curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/inst
 
 The install script detects your shell, places the binary on `PATH`, and wires up the prompt hook. Open a new terminal and you're done.
 
+**Via Cargo**
+
+```sh
+cargo install gitflect
+```
+
+Then add the init line to your shell profile and reload:
+
+```sh
+# Bash — add to ~/.bashrc
+echo 'eval "$(gitflect init bash)"' >> ~/.bashrc && exec $SHELL
+
+# Zsh — add to ~/.zshrc
+echo 'eval "$(gitflect init zsh)"' >> ~/.zshrc && exec $SHELL
+```
+
+To remove:
+
+```sh
+cargo uninstall gitflect
+# then remove the eval line from ~/.bashrc or ~/.zshrc
+```
+
 ## Usage
 
 ```sh

@@ -49,6 +49,31 @@ Use `latest` to follow the newest GitHub release.
 GITFLECT_VERSION=latest curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
+## Via Cargo
+
+If you have Rust installed, you can install directly from [crates.io](https://crates.io/crates/gitflect):
+
+```sh
+cargo install gitflect
+```
+
+The binary lands in `~/.cargo/bin`. Add the init line to your shell profile, then reload:
+
+```sh
+# Bash
+echo 'eval "$(gitflect init bash)"' >> ~/.bashrc && exec $SHELL
+
+# Zsh
+echo 'eval "$(gitflect init zsh)"' >> ~/.zshrc && exec $SHELL
+```
+
+To remove:
+
+```sh
+cargo uninstall gitflect
+# then remove the eval line from ~/.bashrc or ~/.zshrc
+```
+
 ## Verify
 
 ```sh
