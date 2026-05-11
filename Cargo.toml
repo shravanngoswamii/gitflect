@@ -7,8 +7,17 @@ rust-version = "1.85"
 description = "A fast Rust Git prompt and Bash/Zsh integration inspired by posh-git"
 license = "MIT"
 readme = "README.md"
+repository = "https://github.com/shravanngoswamii/gitflect"
+homepage = "https://shravangoswami.com/gitflect/"
+documentation = "https://shravangoswami.com/gitflect/docs/start/install/"
 keywords = ["git", "prompt", "bash", "zsh", "posh-git"]
 categories = ["command-line-utilities", "development-tools"]
+exclude = [
+    ".github/",
+    "docs/",
+    ".githooks/",
+    "*.sh",
+]
 
 [[bin]]
 name = "gitflect"
