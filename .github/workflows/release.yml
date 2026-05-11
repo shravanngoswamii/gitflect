@@ -7,6 +7,7 @@ on:
 
 permissions:
   contents: write
+  issues: write
 
 env:
   BIN_NAME: gitflect
@@ -182,3 +183,68 @@ jobs:
         env:
           CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
         run: cargo publish --locked
+
+  notify:
+    name: Notify release comment
+    if: always() && needs.validate.result == 'success'
+    needs:
+      - validate
+      - publish
+      - publish-crates
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Read trigger context from tag annotation
+        id: ctx
+        run: |
+          annotation=$(git tag -l "${{ github.ref_name }}" --format='%(contents)')
+          issue=$(printf '%s' "$annotation" | grep '^issue=' | cut -d= -f2)
+          comment=$(printf '%s' "$annotation" | grep '^comment=' | cut -d= -f2)
+          echo "issue=${issue}" >> "$GITHUB_OUTPUT"
+          echo "comment=${comment}" >> "$GITHUB_OUTPUT"
+
+      - name: Update release comment
+        if: steps.ctx.outputs.comment != ''
+        uses: actions/github-script@v8
+        env:
+          COMMENT_ID: ${{ steps.ctx.outputs.comment }}
+          RELEASE_RESULT: ${{ needs.publish.result }}
+          CRATES_RESULT: ${{ needs.publish-crates.result }}
+        with:
+          script: |
+            const tag     = context.ref.replace('refs/tags/', '');
+            const version = tag.replace(/^v/, '');
+            const repo    = `${context.repo.owner}/${context.repo.repo}`;
+
+            const status = r => ({ success: 'success', failure: 'FAILED', cancelled: 'cancelled', skipped: 'skipped' }[r] ?? r);
+            const releaseResult = process.env.RELEASE_RESULT;
+            const cratesResult  = process.env.CRATES_RESULT;
+            const allGood = releaseResult === 'success' && cratesResult === 'success';
+
+            const headline = allGood
+              ? `**gitflect ${tag} released**`
+              : `**gitflect ${tag} — some steps failed** — [view run](https://github.com/${repo}/actions/runs/${context.runId})`;
+
+            const body = [
+              '/release',
+              '',
+              '---',
+              headline,
+              '',
+              '| Destination | Status |',
+              '| :-- | :-- |',
+              `| [GitHub Release](https://github.com/${repo}/releases/tag/${tag}) | ${status(releaseResult)} |`,
+              `| [crates.io](https://crates.io/crates/gitflect/${version}) | ${status(cratesResult)} |`,
+            ].join('\n');
+
+            await github.rest.issues.updateComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              comment_id: parseInt(process.env.COMMENT_ID, 10),
+              body,
+            });

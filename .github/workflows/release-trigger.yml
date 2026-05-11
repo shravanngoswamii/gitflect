@@ -52,9 +52,13 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git tag -a "${{ steps.version.outputs.tag }}" HEAD \
-            -m "Release ${{ steps.version.outputs.tag }}"
-          git push origin "${{ steps.version.outputs.tag }}"
+          tag="${{ steps.version.outputs.tag }}"
+          msg="Release ${tag}"
+          if [[ "${{ github.event_name }}" == "issue_comment" ]]; then
+            msg="${msg}"$'\n'"issue=${{ github.event.issue.number }}"$'\n'"comment=${{ github.event.comment.id }}"
+          fi
+          git tag -a "${tag}" HEAD -m "${msg}"
+          git push origin "${tag}"
 
       - name: React with rocket
         if: success() && github.event_name == 'issue_comment'
