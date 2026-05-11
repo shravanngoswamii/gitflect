@@ -5,6 +5,18 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-05-11
+
+### Changed
+
+- **`gitflect settings` custom theme** — selecting `custom` in the theme picker now launches the symbol wizard directly without leaving the settings flow.
+- **Settings TUI** — enum picker is now a full-screen overlay with proper scrolling; terminal height is read dynamically instead of hardcoded, so all options are reachable on any terminal size.
+- **Install script** — added `exec $SHELL` as a suggested alternative to `source ~/.bashrc` after a fresh install.
+
+### Removed
+
+- `gitflect config get`, `gitflect config set`, `gitflect config init`, `gitflect config default` — use `gitflect settings` for interactive editing and `gitflect config` / `gitflect config path` for inspection.
+
 ## [0.3.0] - 2026-05-11
 
 ### Changed

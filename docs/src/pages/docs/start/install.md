@@ -62,4 +62,16 @@ Outside a Git repository, `gitflect status` prints nothing. Inside a repository,
 (main ≡ +1 ~2 -0 !)
 ```
 
+After installation, reload your shell to activate it:
+
+```sh
+source ~/.bashrc   # or ~/.zshrc for Zsh
+```
+
+Or start a fresh session:
+
+```sh
+exec $SHELL
+```
+
 <div class="callout note">Shell integration is added to your profile automatically by the install script. Manual setup is only needed if you placed the binary on <code>PATH</code> yourself — see <a href="/docs/start/shell-setup/">Shell setup</a>.</div>

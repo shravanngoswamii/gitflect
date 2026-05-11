@@ -26,7 +26,27 @@ fn main() -> ExitCode {
         "config" => command_config(&args[1..]),
         "theme" => command_theme(&args[1..]),
         "settings" => {
-            tui::run_settings();
+            match tui::run_settings() {
+                tui::SettingsExit::Done => {}
+                tui::SettingsExit::LaunchWizard => {
+                    let config = Config::load();
+                    if let Some(result) = wizard::run_wizard(&config) {
+                        for (key, value) in &result.pairs {
+                            if let Err(e) = Config::set_in_file(key, value) {
+                                eprintln!("{e}");
+                            }
+                        }
+                        println!("Custom theme saved. Run `gitflect status` to preview.");
+                        if let Some(theme_name) = result.theme_name {
+                            let pairs_refs: Vec<(&str, &str)> =
+                                result.pairs.iter().map(|(k, v)| (*k, v.as_str())).collect();
+                            if let Err(e) = config::save_named_theme(&theme_name, &pairs_refs) {
+                                eprintln!("Warning: could not save named theme: {e}");
+                            }
+                        }
+                    }
+                }
+            }
             ExitCode::SUCCESS
         }
         "help" | "-h" | "--help" => {
@@ -185,93 +205,6 @@ fn command_config(args: &[String]) -> ExitCode {
             ExitCode::SUCCESS
         }
 
-        "init" => {
-            let Some(path) = config::config_path() else {
-                eprintln!("cannot determine config path: HOME not set");
-                return ExitCode::FAILURE;
-            };
-            if path.exists() {
-                println!("config file already exists: {}", path.display());
-                return ExitCode::SUCCESS;
-            }
-            if let Some(parent) = path.parent() {
-                if let Err(error) = std::fs::create_dir_all(parent) {
-                    eprintln!("failed to create config directory: {error}");
-                    return ExitCode::FAILURE;
-                }
-            }
-            if let Err(error) = std::fs::write(&path, Config::default_config_text()) {
-                eprintln!("failed to write config file: {error}");
-                return ExitCode::FAILURE;
-            }
-            println!("created {}", path.display());
-            ExitCode::SUCCESS
-        }
-
-        "default" | "--print-default" => {
-            print!("{}", Config::default_config_text());
-            ExitCode::SUCCESS
-        }
-
-        "get" => {
-            let Some(key) = args.get(1) else {
-                eprintln!("usage: gitflect config get <key>");
-                return ExitCode::from(2);
-            };
-            if !Config::is_known_key(key) {
-                eprintln!("unknown config key: {key}");
-                eprintln!("run 'gitflect config' to see all keys");
-                return ExitCode::from(2);
-            }
-            let config = Config::load();
-            match config.get_value(key) {
-                Some(v) => {
-                    if let Some(opts) = Config::valid_values_for(key) {
-                        println!("{v}  # {opts}");
-                    } else {
-                        println!("{v}");
-                    }
-                }
-                None => {
-                    eprintln!("unknown config key: {key}");
-                    return ExitCode::from(2);
-                }
-            }
-            ExitCode::SUCCESS
-        }
-
-        "set" => {
-            let (Some(key), Some(value)) = (args.get(1), args.get(2)) else {
-                eprintln!("usage: gitflect config set <key> <value>");
-                return ExitCode::from(2);
-            };
-            if !Config::is_known_key(key) {
-                eprintln!("unknown config key: {key}");
-                if let Some(opts) = Config::valid_values_for(key) {
-                    eprintln!("valid values: {opts}");
-                }
-                eprintln!("run 'gitflect config' to see all keys");
-                return ExitCode::from(2);
-            }
-            if let Some(opts) = Config::valid_values_for(key) {
-                let normalized = value.trim().to_ascii_lowercase();
-                let valid = opts.split(", ").any(|opt| opt == normalized);
-                if !valid {
-                    eprintln!("invalid value for {key}: {value}");
-                    eprintln!("valid values: {opts}");
-                    return ExitCode::from(2);
-                }
-            }
-            match Config::set_in_file(key, value) {
-                Ok(path) => println!("set {key}={value} in {}", path.display()),
-                Err(error) => {
-                    eprintln!("{error}");
-                    return ExitCode::FAILURE;
-                }
-            }
-            ExitCode::SUCCESS
-        }
-
         "" => {
             let config = Config::load();
             let path = config::config_path();
@@ -290,9 +223,7 @@ fn command_config(args: &[String]) -> ExitCode {
 
         unknown => {
             eprintln!("unknown config subcommand: {unknown}");
-            eprintln!(
-                "usage: gitflect config [get <key> | set <key> <value> | path | init | default]"
-            );
+            eprintln!("usage: gitflect config [path]");
             ExitCode::from(2)
         }
     }
@@ -518,12 +449,8 @@ USAGE:
   gitflect theme save <name>           Save current custom symbols as a named theme
   gitflect theme load <name>           Load a named theme as the active custom theme
   gitflect theme saved                 List all saved named themes
-  gitflect config                      Show active configuration
-  gitflect config get <key>            Print the value of a config key
-  gitflect config set <key> <value>    Set a config key in the config file
+  gitflect config                      Show active configuration (file + env overrides)
   gitflect config path                 Print config file path
-  gitflect config init                 Create config file from defaults
-  gitflect config default              Print default config template
 
 THEMES:
   posh          Unicode symbols — default (↑ ↓ ↕ ≡ ×)
@@ -542,8 +469,7 @@ SHELL SETUP (manual install only — the install script handles this automatical
 CONFIG:
   File: $GITFLECT_CONFIG or $XDG_CONFIG_HOME/gitflect/config or ~/.config/gitflect/config
   Env vars with GITFLECT_ prefix override the file (e.g. GITFLECT_ENABLE_STASH=true)
-  Run 'gitflect config init' to create the file, 'gitflect config' to see active values.
-  Run 'gitflect config set theme plain' to change a setting from the command line.
+  Run 'gitflect settings' to browse and change all settings interactively.
 
 BUGS:
   Report issues at: https://github.com/shravanngoswamii/gitflect/issues

@@ -134,3 +134,17 @@ pub fn tty_write() -> Option<std::fs::File> {
 pub fn tty_read() -> Option<std::fs::File> {
     std::fs::OpenOptions::new().read(true).open("/dev/tty").ok()
 }
+
+pub fn terminal_rows() -> usize {
+    let stdin = std::fs::File::open("/dev/tty")
+        .map(std::process::Stdio::from)
+        .unwrap_or_else(|_| std::process::Stdio::null());
+    std::process::Command::new("stty")
+        .arg("size")
+        .stdin(stdin)
+        .output()
+        .ok()
+        .and_then(|o| String::from_utf8(o.stdout).ok())
+        .and_then(|s| s.trim().split_once(' ').and_then(|(r, _)| r.parse().ok()))
+        .unwrap_or(24)
+}

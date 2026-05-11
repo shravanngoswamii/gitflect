@@ -168,29 +168,6 @@ impl Config {
         }
     }
 
-    pub fn default_config_text() -> &'static str {
-        r#"# gitflect config
-# Values are key=value. Environment variables with the GITFLECT_ prefix
-# override this file.
-theme=posh-rounded
-color=auto
-enable_prompt_status=true
-enable_file_status=true
-enable_stash_status=false
-untracked_files=normal
-show_zero_counts=true
-status_first=false
-abbreviate_home=true
-abbreviate_git_dir=false
-branch_display=full
-branch_name_limit=0
-prompt_suffix=> 
-# prompt_prefix is empty by default. Over SSH, [user@host]: is shown automatically.
-# prompt_prefix=
-path_status_separator= 
-"#
-    }
-
     pub fn to_active_config_text(&self) -> String {
         let theme = match self.theme {
             Theme::Posh => "posh",
@@ -285,68 +262,6 @@ path_status_separator=
             }
         }
         None
-    }
-
-    pub fn is_known_key(key: &str) -> bool {
-        matches!(
-            normalize_key(key).as_str(),
-            "abbreviategitdir"
-                | "abbreviatehome"
-                | "afterstash"
-                | "afterstatus"
-                | "beforestash"
-                | "beforestatus"
-                | "branchdisplay"
-                | "branchbehindandaheaddisplay"
-                | "branchnamelimit"
-                | "color"
-                | "colormode"
-                | "delimstatus"
-                | "describestyle"
-                | "disabledrepositories"
-                | "enablefilestatus"
-                | "enablepromptstatus"
-                | "enablestash"
-                | "enablestashstatus"
-                | "pathstatusseparator"
-                | "promptbeforesuffix"
-                | "promptprefix"
-                | "promptsuffix"
-                | "showexitstatus"
-                | "showstatuswhenzero"
-                | "showzerocounts"
-                | "statusfirst"
-                | "symboladded"
-                | "symbolmodified"
-                | "symbolremoved"
-                | "symbolconflicted"
-                | "symbolworking"
-                | "symbolstaged"
-                | "symbolclean"
-                | "symbolahead"
-                | "symbolbehind"
-                | "symboldiverged"
-                | "symbolidentical"
-                | "symbolgone"
-                | "theme"
-                | "truncatedbranchsuffix"
-                | "untrackedfiles"
-                | "untrackedfilesmode"
-        )
-    }
-
-    pub fn valid_values_for(key: &str) -> Option<&'static str> {
-        match normalize_key(key).as_str() {
-            "theme" => Some("posh, plain, nerd, custom, posh-rounded, emoji, minimal, retro"),
-            "color" | "colormode" => Some("auto, always, never"),
-            "branchdisplay" | "branchbehindandaheaddisplay" => Some("full, compact, minimal"),
-            "describestyle" => Some("default, contains, branch, describe"),
-            "untrackedfiles" | "untrackedfilesmode" => Some("no, normal, all"),
-            "enablefilestatus" | "enablepromptstatus" | "enablestash" | "enablestashstatus"
-            | "showexitstatus" | "showstatuswhenzero" | "showzerocounts" | "statusfirst"
-            | "abbreviatehome" | "abbreviategitdir" => Some("true, false"),
-            _ => None,
-        }
     }
 
     pub fn set_in_file(key: &str, value: &str) -> Result<PathBuf, String> {

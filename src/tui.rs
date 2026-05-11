@@ -1,5 +1,5 @@
 use crate::config::Config;
-use crate::terminal::{AltScreen, Key, RawMode, next_key, tty_read, tty_write};
+use crate::terminal::{AltScreen, Key, RawMode, next_key, terminal_rows, tty_read, tty_write};
 use std::collections::HashMap;
 use std::io::Write;
 
@@ -137,6 +137,11 @@ enum Mode {
     EditText(String),
 }
 
+pub enum SettingsExit {
+    Done,
+    LaunchWizard,
+}
+
 fn build_rows() -> Vec<Row> {
     let mut rows = Vec::new();
     let mut last = "";
@@ -195,9 +200,9 @@ fn render(
     mode: &Mode,
     save_flash: bool,
     discard_warn: bool,
+    term_rows: usize,
 ) {
     let label_w = SETTINGS.iter().map(|s| s.label.len()).max().unwrap_or(0);
-    let visible = 20usize;
 
     let _ = write!(out, "\x1b[2J\x1b[H");
     let _ = write!(
@@ -205,14 +210,49 @@ fn render(
         "\x1b[1m\x1b[96mgitflect\x1b[0m  Settings  \x1b[90m↑↓ navigate  ←→ / Enter cycle  s save  q quit\x1b[0m\r\n\r\n"
     );
 
-    // In PickEnum mode, we expand the current setting row into multiple option rows.
-    // We compute rows to display carefully.
-    let pick_cursor = if let Mode::PickEnum(c) = mode {
-        Some(*c)
-    } else {
-        None
-    };
+    // PickEnum: full-screen picker — handles its own scrolling
+    if let Mode::PickEnum(pc) = mode {
+        let s = &SETTINGS[current];
+        let _ = write!(out, "  \x1b[90mSelect {}:\x1b[0m\r\n\r\n", s.label);
 
+        if let SettingKind::Enum(opts) = s.kind {
+            let cur_val = disp_value(config, pending, s.key);
+            // rows available for option lines: total - header(2) - label(1) - blank(1) - footer(2)
+            let available = term_rows.saturating_sub(6).max(3);
+            let pick_scroll = if *pc + 1 > available {
+                pc + 1 - available
+            } else {
+                0
+            };
+
+            if pick_scroll > 0 {
+                let _ = write!(out, "  \x1b[90m... {} more above\x1b[0m\r\n", pick_scroll);
+            }
+            for (oi, opt) in opts.iter().enumerate().skip(pick_scroll).take(available) {
+                if oi == *pc {
+                    let _ = write!(out, "  \x1b[1m\x1b[96m> {}\x1b[0m\r\n", opt);
+                } else if *opt == cur_val {
+                    let _ = write!(out, "  \x1b[32m* {}\x1b[0m\r\n", opt);
+                } else {
+                    let _ = write!(out, "  \x1b[90m  {}\x1b[0m\r\n", opt);
+                }
+            }
+            let hidden_below = opts.len().saturating_sub(pick_scroll + available);
+            if hidden_below > 0 {
+                let _ = write!(out, "  \x1b[90m... {} more below\x1b[0m\r\n", hidden_below);
+            }
+        }
+
+        let _ = write!(
+            out,
+            "\r\n  \x1b[90m↑↓ navigate  Space/Enter select  Esc cancel\x1b[0m\r\n"
+        );
+        let _ = out.flush();
+        return;
+    }
+
+    // Browse / EditText: render main settings list
+    let visible = term_rows.saturating_sub(5).max(5);
     for row in rows.iter().skip(scroll).take(visible) {
         match row {
             Row::Section(name) => {
@@ -223,44 +263,26 @@ fn render(
                 let is_cur = *i == current;
 
                 if is_cur {
-                    if let Some(pc) = pick_cursor {
-                        // PickEnum mode for this setting — show label row then all options
-                        let _ = write!(out, "  \x1b[1m\x1b[96m▶  {:<label_w$}\x1b[0m\r\n", s.label);
-                        if let SettingKind::Enum(opts) = s.kind {
-                            let cur_val = disp_value(config, pending, s.key);
-                            for (oi, opt) in opts.iter().enumerate() {
-                                if oi == pc {
-                                    let _ = write!(out, "\x1b[1m\x1b[96m  ▶ {}\x1b[0m\r\n", opt);
-                                } else if *opt == cur_val {
-                                    let _ = write!(out, "\x1b[32m  ✓ {}\x1b[0m\r\n", opt);
-                                } else {
-                                    let _ = write!(out, "\x1b[90m    {}\x1b[0m\r\n", opt);
-                                }
+                    let value = match mode {
+                        Mode::EditText(input) => format!("{input}_"),
+                        _ => disp_value(config, pending, s.key),
+                    };
+                    let hint = match s.kind {
+                        SettingKind::Bool => "  \x1b[90m←→\x1b[0m",
+                        SettingKind::Enum(_) => "  \x1b[90m←→ / Enter expand\x1b[0m",
+                        SettingKind::Str | SettingKind::Uint => {
+                            if matches!(mode, Mode::EditText(_)) {
+                                "  \x1b[90mEnter confirm  Esc cancel\x1b[0m"
+                            } else {
+                                "  \x1b[90mEnter to edit\x1b[0m"
                             }
                         }
-                    } else {
-                        // Browse mode or EditText mode for this setting
-                        let value = match mode {
-                            Mode::EditText(input) => format!("{input}_"),
-                            _ => disp_value(config, pending, s.key),
-                        };
-                        let hint = match s.kind {
-                            SettingKind::Bool => "  \x1b[90m←→\x1b[0m",
-                            SettingKind::Enum(_) => "  \x1b[90m←→ / Enter expand\x1b[0m",
-                            SettingKind::Str | SettingKind::Uint => {
-                                if matches!(mode, Mode::EditText(_)) {
-                                    "  \x1b[90mEnter confirm  Esc cancel\x1b[0m"
-                                } else {
-                                    "  \x1b[90mEnter to edit\x1b[0m"
-                                }
-                            }
-                        };
-                        let _ = write!(
-                            out,
-                            "  \x1b[1m\x1b[96m▶  {:<label_w$}\x1b[0m  \x1b[33m{}\x1b[0m{}\r\n",
-                            s.label, value, hint
-                        );
-                    }
+                    };
+                    let _ = write!(
+                        out,
+                        "  \x1b[1m\x1b[96m▶  {:<label_w$}\x1b[0m  \x1b[33m{}\x1b[0m{}\r\n",
+                        s.label, value, hint
+                    );
                 } else {
                     let value = disp_value(config, pending, s.key);
                     let changed = pending.contains_key(s.key);
@@ -276,51 +298,41 @@ fn render(
     }
 
     let _ = write!(out, "\r\n");
-    match mode {
-        Mode::PickEnum(_) => {
-            let _ = write!(
-                out,
-                "  \x1b[90m↑↓ navigate  Space/Enter select  Esc cancel\x1b[0m\r\n"
-            );
-        }
-        _ => {
-            if discard_warn {
-                let _ = write!(
-                    out,
-                    "  \x1b[31mUnsaved changes — press q again to discard, or s to save\x1b[0m\r\n"
-                );
-            } else if save_flash {
-                let _ = write!(out, "  \x1b[32mSaved.\x1b[0m\r\n");
-            } else if pending.is_empty() {
-                let _ = write!(out, "  \x1b[90mNo unsaved changes\x1b[0m\r\n");
-            } else {
-                let n = pending.len();
-                let _ = write!(
-                    out,
-                    "  \x1b[33m{} unsaved change{} — press s to save\x1b[0m\r\n",
-                    n,
-                    if n == 1 { "" } else { "s" }
-                );
-            }
-        }
+    if discard_warn {
+        let _ = write!(
+            out,
+            "  \x1b[31mUnsaved changes — press q again to discard, or s to save\x1b[0m\r\n"
+        );
+    } else if save_flash {
+        let _ = write!(out, "  \x1b[32mSaved.\x1b[0m\r\n");
+    } else if pending.is_empty() {
+        let _ = write!(out, "  \x1b[90mNo unsaved changes\x1b[0m\r\n");
+    } else {
+        let n = pending.len();
+        let _ = write!(
+            out,
+            "  \x1b[33m{} unsaved change{} — press s to save\x1b[0m\r\n",
+            n,
+            if n == 1 { "" } else { "s" }
+        );
     }
     let _ = out.flush();
 }
 
-pub fn run_settings() {
+pub fn run_settings() -> SettingsExit {
     let Some(mut tty_w) = tty_write() else {
         eprintln!("cannot open /dev/tty");
-        return;
+        return SettingsExit::Done;
     };
     let Some(mut tty_r) = tty_read() else {
         eprintln!("cannot open /dev/tty");
-        return;
+        return SettingsExit::Done;
     };
 
     let _alt = AltScreen::enter(&mut tty_w);
     let Some(_raw) = RawMode::enter() else {
         eprintln!("cannot enter raw mode");
-        return;
+        return SettingsExit::Done;
     };
 
     let _ = write!(tty_w, "\x1b[?1l");
@@ -334,6 +346,7 @@ pub fn run_settings() {
     let mut mode = Mode::Browse;
     let mut save_flash = false;
     let mut discard_warn = false;
+    let mut term_rows = terminal_rows();
 
     render(
         &mut tty_w,
@@ -345,12 +358,15 @@ pub fn run_settings() {
         &mode,
         save_flash,
         discard_warn,
+        term_rows,
     );
 
     loop {
         let Some(key) = next_key(&mut tty_r) else {
             continue;
         };
+
+        term_rows = terminal_rows();
 
         match mode {
             Mode::EditText(ref mut input) => {
@@ -385,6 +401,7 @@ pub fn run_settings() {
                     &mode,
                     save_flash,
                     discard_warn,
+                    term_rows,
                 );
                 continue;
             }
@@ -400,8 +417,15 @@ pub fn run_settings() {
                         }
                         Key::Space | Key::Enter => {
                             let chosen = opts[*pick_cursor].to_string();
-                            pending.insert(SETTINGS[current].key.to_string(), chosen);
+                            pending.insert(SETTINGS[current].key.to_string(), chosen.clone());
                             mode = Mode::Browse;
+                            // Custom theme: save pending and hand off to wizard
+                            if SETTINGS[current].key == "theme" && chosen == "custom" {
+                                for (k, v) in &pending {
+                                    let _ = Config::set_in_file(k, v);
+                                }
+                                return SettingsExit::LaunchWizard;
+                            }
                         }
                         Key::Esc => {
                             mode = Mode::Browse;
@@ -421,6 +445,7 @@ pub fn run_settings() {
                     &mode,
                     save_flash,
                     discard_warn,
+                    term_rows,
                 );
                 continue;
             }
@@ -443,16 +468,17 @@ pub fn run_settings() {
             }
             other => {
                 discard_warn = false;
+                let visible = term_rows.saturating_sub(5).max(5);
                 match other {
                     Key::Up => {
                         current = current.saturating_sub(1);
-                        adjust_scroll(&rows, current, &mut scroll, 20);
+                        adjust_scroll(&rows, current, &mut scroll, visible);
                     }
                     Key::Down => {
                         if current + 1 < SETTINGS.len() {
                             current += 1;
                         }
-                        adjust_scroll(&rows, current, &mut scroll, 20);
+                        adjust_scroll(&rows, current, &mut scroll, visible);
                     }
                     Key::Left => {
                         cycle(&config, &mut pending, current, -1);
@@ -469,15 +495,8 @@ pub fn run_settings() {
                             cycle(&config, &mut pending, current, 1);
                         }
                         SettingKind::Enum(opts) => {
-                            // Find current option index to start pick cursor there
                             let cur_val = disp_value(&config, &pending, SETTINGS[current].key);
                             let pc = opts.iter().position(|&o| o == cur_val).unwrap_or(0);
-                            // Adjust scroll so current setting is near top
-                            let row_idx = rows
-                                .iter()
-                                .position(|r| matches!(r, Row::Setting(i) if *i == current))
-                                .unwrap_or(0);
-                            scroll = row_idx.saturating_sub(1);
                             mode = Mode::PickEnum(pc);
                         }
                     },
@@ -509,6 +528,7 @@ pub fn run_settings() {
             &mode,
             save_flash,
             discard_warn,
+            term_rows,
         );
     }
 
@@ -518,4 +538,6 @@ pub fn run_settings() {
     if !pending.is_empty() {
         println!("Cancelled — no changes saved.");
     }
+
+    SettingsExit::Done
 }

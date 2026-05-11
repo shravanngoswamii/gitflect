@@ -269,6 +269,10 @@ print_summary() {
             printf '\n'
             printf '  source %s\n' "$profile_updated"
             printf '\n'
+            printf 'Or start a fresh shell session:\n'
+            printf '\n'
+            printf '  exec $SHELL\n'
+            printf '\n'
         fi
     else
         printf '\n'

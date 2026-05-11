@@ -208,11 +208,12 @@ jobs:
           echo "issue=${issue}" >> "$GITHUB_OUTPUT"
           echo "comment=${comment}" >> "$GITHUB_OUTPUT"
 
-      - name: Update release comment
-        if: steps.ctx.outputs.comment != ''
+      - name: Post release status to issue
+        if: steps.ctx.outputs.issue != ''
         uses: actions/github-script@v8
         env:
           COMMENT_ID: ${{ steps.ctx.outputs.comment }}
+          ISSUE_NUM: ${{ steps.ctx.outputs.issue }}
           RELEASE_RESULT: ${{ needs.publish.result }}
           CRATES_RESULT: ${{ needs.publish-crates.result }}
         with:
@@ -231,9 +232,6 @@ jobs:
               : `**gitflect ${tag} — some steps failed** — [view run](https://github.com/${repo}/actions/runs/${context.runId})`;
 
             const body = [
-              '/release',
-              '',
-              '---',
               headline,
               '',
               '| Destination | Status |',
@@ -242,9 +240,19 @@ jobs:
               `| [crates.io](https://crates.io/crates/gitflect/${version}) | ${status(cratesResult)} |`,
             ].join('\n');
 
-            await github.rest.issues.updateComment({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              comment_id: parseInt(process.env.COMMENT_ID, 10),
-              body,
-            });
+            const commentId = process.env.COMMENT_ID ? parseInt(process.env.COMMENT_ID, 10) : null;
+            if (commentId) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: commentId,
+                body: '/release\n\n---\n' + body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: parseInt(process.env.ISSUE_NUM, 10),
+                body,
+              });
+            }

@@ -26,51 +26,12 @@ gitflect settings
 
 Use **↑/↓** to navigate, **←/→** or **Enter** to cycle enum and boolean values, **Enter** to edit text fields inline, and **s** to save all changes at once.
 
-## Read and write settings from the CLI
-
-Get the current value of any key:
-
-```sh
-gitflect config get theme
-# posh  # posh, plain, nerd
-```
-
-Set a value without opening the file:
-
-```sh
-gitflect config set theme plain
-gitflect config set color never
-gitflect config set enable_stash_status true
-```
-
-To switch themes quickly, you can also use `gitflect theme set`:
-
-```sh
-gitflect theme set plain
-gitflect theme set nerd
-gitflect theme set custom   # launches interactive wizard
-```
-
-`set` writes to the config file and validates the value against the allowed options. If the key does not exist or the value is invalid, an error is printed with the valid choices.
-
-## Create the config file
-
-```sh
-gitflect config init
-```
-
-Creates `~/.config/gitflect/config` (or the path in `$XDG_CONFIG_HOME`) with all defaults written out. Edit it in any text editor.
+## Config file path
 
 To see where the file lives:
 
 ```sh
 gitflect config path
-```
-
-To print the defaults without creating the file:
-
-```sh
-gitflect config default
 ```
 
 ## Lookup order

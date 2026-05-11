@@ -56,6 +56,8 @@ jobs:
           msg="Release ${tag}"
           if [[ "${{ github.event_name }}" == "issue_comment" ]]; then
             msg="${msg}"$'\n'"issue=${{ github.event.issue.number }}"$'\n'"comment=${{ github.event.comment.id }}"
+          else
+            msg="${msg}"$'\n'"issue=1"
           fi
           git tag -a "${tag}" HEAD -m "${msg}"
           git push origin "${tag}"
