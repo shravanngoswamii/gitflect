@@ -20,7 +20,7 @@
   &nbsp;·&nbsp;
   <a href="https://shravangoswami.com/gitflect/docs/reference/changelog/">Changelog</a>
   &nbsp;·&nbsp;
-  <a href="https://github.com/shravanngoswamii/gitflect?tab=contributing-ov-file">Contributing</a>
+  <a href="https://github.com/shravanngoswamii/gitflect?tab=contributing-ov-file#contributing-to-gitflect">Contributing</a>
 </p>
 
 ```sh
