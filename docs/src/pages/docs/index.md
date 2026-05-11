@@ -4,33 +4,31 @@ title: Documentation
 description: Install, configure, and understand gitflect.
 ---
 
-`gitflect` is a small native prompt helper that shows Git state without taking
-over your shell.
+`gitflect` is a small native prompt helper that shows Git state without taking over your shell.
 
-It keeps repository context close to the command line. It renders the branch,
-upstream divergence, staged changes, working tree changes, untracked files,
-stash count, and in-progress operations as a compact segment beside the prompt
-you already use.
+It renders the branch, upstream divergence, staged and working tree changes, untracked files, stash count, and in-progress operations as a compact segment beside the prompt you already use.
 
-`gitflect` is inspired by posh-git, but built as a native Unix-style binary for
-Linux and macOS terminals.
-
-## First run
+## Install
 
 ```sh
 curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
-The install script downloads the binary, puts it on your `PATH`, and wires up the shell integration automatically. No manual shell setup needed.
+The install script downloads the binary, puts it on your `PATH`, and wires up the shell integration automatically. Open a new terminal and you're done.
 
-Use `gitflect status --no-color` to inspect the rendered Git segment directly.
+## Quick check
 
-## Contents
+```sh
+gitflect status --no-color
+```
 
-- [Install](start/install/)
-- [Shell setup](start/shell-setup/)
-- [Update](start/update/)
-- [Prompt segments](use/prompt-segments/)
-- [Configuration](use/configuration/)
-- [Commands](reference/commands/)
-- [Release artifacts](reference/release-artifacts/)
+Inside a Git repository this prints a segment such as:
+
+```text
+(main ≡ +1 ~2 -0 !)
+```
+
+## Next steps
+
+- [Themes](/docs/use/themes/) — switch the visual style or build a custom one
+- [Settings](/docs/use/settings/) — browse and change all options interactively

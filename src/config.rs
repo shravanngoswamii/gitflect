@@ -117,8 +117,8 @@ impl Default for Config {
             abbreviate_home: true,
             before_stash: " (".to_string(),
             after_stash: ")".to_string(),
-            before_status: "[".to_string(),
-            after_status: "]".to_string(),
+            before_status: "(".to_string(),
+            after_status: ")".to_string(),
             branch_display: BranchDivergenceDisplay::Full,
             branch_name_limit: 0,
             color_mode: ColorMode::Auto,
@@ -136,7 +136,7 @@ impl Default for Config {
             show_status_when_zero: true,
             status_first: false,
             symbols: Symbols::default(),
-            theme: Theme::Posh,
+            theme: Theme::PoshRounded,
             truncated_branch_suffix: "...".to_string(),
             untracked_mode: UntrackedMode::Normal,
         }
@@ -172,7 +172,7 @@ impl Config {
         r#"# gitflect config
 # Values are key=value. Environment variables with the GITFLECT_ prefix
 # override this file.
-theme=posh
+theme=posh-rounded
 color=auto
 enable_prompt_status=true
 enable_file_status=true

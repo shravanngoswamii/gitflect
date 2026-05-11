@@ -497,6 +497,8 @@ mod tests {
     fn renders_posh_style_status_without_color() {
         let config = Config {
             color_mode: ColorMode::Never,
+            before_status: "[".to_string(),
+            after_status: "]".to_string(),
             ..Config::default()
         };
 
@@ -510,6 +512,8 @@ mod tests {
     fn renders_ahead_and_behind_full() {
         let config = Config {
             color_mode: ColorMode::Never,
+            before_status: "[".to_string(),
+            after_status: "]".to_string(),
             ..Config::default()
         };
         let status = GitStatus {

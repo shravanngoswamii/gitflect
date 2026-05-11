@@ -144,7 +144,7 @@ fn status_and_json_report_real_git_counts() {
     write(repo.join("untracked.txt"), "new working file\n");
 
     let status = run_tool(&repo, ["status", "--no-color"].as_slice());
-    assert_eq!(status.trim(), "[main +1 ~0 -0 | +1 ~1 -1 !]");
+    assert_eq!(status.trim(), "(main +1 ~0 -0 | +1 ~1 -1 !)");
 
     let json = run_tool(&repo, ["status", "--json", "--no-color"].as_slice());
     assert!(json.contains("\"branch\":\"main\""));
@@ -199,7 +199,7 @@ fn upstream_divergence_is_rendered_after_fetch() {
     git(&local, ["fetch", "origin"]);
 
     let status = run_tool(&local, ["status", "--no-color"].as_slice());
-    assert_eq!(status.trim(), "[main ↓1 ↑1]");
+    assert_eq!(status.trim(), "(main ↓1 ↑1)");
 }
 
 #[test]
@@ -230,7 +230,7 @@ fn stash_count_is_opt_in_and_config_file_driven() {
         ],
     );
 
-    assert_eq!(output.trim(), "[main (1)]");
+    assert_eq!(output.trim(), "(main (1))");
 }
 
 #[test]

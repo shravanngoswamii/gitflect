@@ -85,7 +85,7 @@ Environment variables are applied after the file, so they always win.
 
 | Key | Default | Valid values |
 | :-- | :-- | :-- |
-| `theme` | `posh` | `posh`, `posh-rounded`, `plain`, `nerd`, `emoji`, `minimal`, `retro`, `custom` |
+| `theme` | `posh-rounded` | `posh-rounded`, `posh`, `plain`, `nerd`, `emoji`, `minimal`, `retro`, `custom` |
 | `color` | `auto` | `auto`, `always`, `never` |
 | `enable_prompt_status` | `true` | `true`, `false` |
 | `enable_file_status` | `true` | `true`, `false` |
