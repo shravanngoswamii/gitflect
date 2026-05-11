@@ -22,7 +22,10 @@ export const navGroups = [
 			{ title: "Shell setup", href: "/docs/start/shell-setup/" },
 			{ title: "Update", href: "/docs/start/update/" },
 			{ title: "Uninstall", href: "/docs/start/uninstall/" },
-			{ title: "Release artifacts", href: "/docs/reference/release-artifacts/" },
+			{
+				title: "Release artifacts",
+				href: "/docs/reference/release-artifacts/",
+			},
 			{ title: "Changelog", href: "/docs/reference/changelog/" },
 		],
 	},

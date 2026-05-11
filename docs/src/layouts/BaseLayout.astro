@@ -28,7 +28,6 @@ const {
 } = Astro.props;
 const pageTitle = title === "gitflect" ? "gitflect" : `${title} | gitflect`;
 const githubSponsorsUrl = "https://github.com/sponsors/shravanngoswamii";
-const currentYear = new Date().getFullYear();
 const canonicalUrl = (() => {
 	const candidate = canonical ?? Astro.url.href;
 	const url = new URL(candidate, Astro.site ?? Astro.url);
@@ -75,6 +74,40 @@ const jsonLdItems = [defaultStructuredData, ...extraStructuredData];
 		<meta name="theme-color" content="#14724b" media="(prefers-color-scheme: light)" />
 		<meta name="theme-color" content="#101413" media="(prefers-color-scheme: dark)" />
 		<link rel="icon" type="image/svg+xml" href={withBase('/favicon.svg')} />
+		<script async src="https://www.googletagmanager.com/gtag/js?id=G-P9HSL9GH6L"></script>
+		<script is:inline>
+			window.dataLayer = window.dataLayer || [];
+			function gtag(...args) {
+				window.dataLayer.push(args);
+			}
+			window.gtag = gtag;
+
+			const EEA_REGIONS = [
+				'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR',
+				'HU', 'IE', 'IT', 'LV', 'LT', 'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK',
+				'SI', 'ES', 'SE', 'GB'
+			];
+
+			gtag('consent', 'default', {
+				ad_storage: 'denied',
+				ad_user_data: 'denied',
+				ad_personalization: 'denied',
+				analytics_storage: 'denied',
+				region: EEA_REGIONS,
+				wait_for_update: 2000
+			});
+
+			gtag('consent', 'default', {
+				ad_storage: 'denied',
+				ad_user_data: 'denied',
+				ad_personalization: 'denied',
+				analytics_storage: 'denied',
+				wait_for_update: 500
+			});
+
+			gtag('js', new Date());
+			gtag('config', 'G-P9HSL9GH6L');
+		</script>
 		{jsonLdItems.map((item) => <script type="application/ld+json" set:html={JSON.stringify(item)}></script>)}
 		<title>{pageTitle}</title>
 		<script is:inline>
@@ -170,9 +203,30 @@ const jsonLdItems = [defaultStructuredData, ...extraStructuredData];
 						GitHub
 					</a>
 				</div>
-				<p class="footer-meta">&copy; {currentYear} gitflect</p>
+				<p class="footer-meta">
+					&copy; 2026 gitflect
+					<span aria-hidden="true"> - </span>
+					<button class="footer-meta-manage" type="button" onclick="window.__openConsentBanner && window.__openConsentBanner()">
+						Manage cookies
+					</button>
+				</p>
 			</div>
 		</footer>
+		<div id="consent-banner" class="consent-banner is-hidden" role="dialog" aria-live="polite" aria-label="Cookie consent" data-pagefind-ignore>
+			<div class="consent-card">
+				<div class="consent-content">
+					<p class="consent-title">Cookie preferences</p>
+					<p class="consent-copy">
+						Help us improve docs with anonymous analytics cookies. You can change this anytime.
+					</p>
+					<p id="consent-status" class="consent-status"></p>
+				</div>
+				<div class="consent-actions">
+					<button id="consent-reject" class="consent-btn consent-btn-secondary" type="button">Decline</button>
+					<button id="consent-accept" class="consent-btn consent-btn-primary" type="button">Allow</button>
+				</div>
+			</div>
+		</div>
 		<script is:inline>
 			(() => {
 				const key = 'gitflect-theme';
@@ -286,6 +340,116 @@ const jsonLdItems = [defaultStructuredData, ...extraStructuredData];
 				});
 				document.addEventListener('keydown', (event) => {
 					if (event.key === 'Escape') closeMenu();
+				});
+			})();
+
+			(() => {
+				const consentKey = 'gitflect-consent-v1';
+				const grantedConsent = {
+					ad_storage: 'granted',
+					ad_user_data: 'granted',
+					ad_personalization: 'granted',
+					analytics_storage: 'granted'
+				};
+				const deniedConsent = {
+					ad_storage: 'denied',
+					ad_user_data: 'denied',
+					ad_personalization: 'denied',
+					analytics_storage: 'denied'
+				};
+
+				const setupConsentBanner = () => {
+					const banner = document.getElementById('consent-banner');
+					const acceptBtn = document.getElementById('consent-accept');
+					const rejectBtn = document.getElementById('consent-reject');
+					const statusEl = document.getElementById('consent-status');
+
+					if (!banner || !acceptBtn || !rejectBtn || !statusEl) {
+						return;
+					}
+
+					if (banner.dataset.bound === 'true') {
+						return;
+					}
+
+					const applyStatusText = () => {
+						const saved = localStorage.getItem(consentKey);
+						if (saved === 'granted') {
+							statusEl.textContent = 'Analytics: allowed';
+							return;
+						}
+						if (saved === 'denied') {
+							statusEl.textContent = 'Analytics: declined';
+							return;
+						}
+						statusEl.textContent = 'No preference saved yet';
+					};
+
+					acceptBtn.addEventListener('click', () => {
+						localStorage.setItem(consentKey, 'granted');
+						window.gtag?.('consent', 'update', grantedConsent);
+						banner.classList.add('is-hidden');
+						applyStatusText();
+					});
+
+					rejectBtn.addEventListener('click', () => {
+						localStorage.setItem(consentKey, 'denied');
+						window.gtag?.('consent', 'update', deniedConsent);
+						banner.classList.add('is-hidden');
+						applyStatusText();
+					});
+
+					banner.dataset.bound = 'true';
+					banner.dataset.statusReady = 'true';
+					applyStatusText();
+				};
+
+				const syncConsentFromStorage = () => {
+					const saved = localStorage.getItem(consentKey);
+					if (saved === 'granted') {
+						window.gtag?.('consent', 'update', grantedConsent);
+						return saved;
+					}
+					if (saved === 'denied') {
+						window.gtag?.('consent', 'update', deniedConsent);
+						return saved;
+					}
+					return null;
+				};
+
+				const showConsentBanner = () => {
+					const banner = document.getElementById('consent-banner');
+					const statusEl = document.getElementById('consent-status');
+					if (!banner || !statusEl) {
+						return;
+					}
+
+					const saved = syncConsentFromStorage();
+					if (saved === 'granted') {
+						statusEl.textContent = 'Analytics: allowed';
+					} else if (saved === 'denied') {
+						statusEl.textContent = 'Analytics: declined';
+					} else {
+						statusEl.textContent = 'No preference saved yet';
+					}
+
+					if (!saved) {
+						banner.classList.remove('is-hidden');
+					}
+				};
+
+				window.__openConsentBanner = () => {
+					const banner = document.getElementById('consent-banner');
+					if (!banner) return;
+					banner.classList.remove('is-hidden');
+				};
+
+				setupConsentBanner();
+				showConsentBanner();
+
+				document.addEventListener('astro:page-load', () => {
+					setupConsentBanner();
+					showConsentBanner();
 				});
 			})();
 		</script>
