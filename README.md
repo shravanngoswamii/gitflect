@@ -23,22 +23,25 @@
 curl -fsSL https://raw.githubusercontent.com/shravanngoswamii/gitflect/main/install.sh | sh
 ```
 
-The install script detects your shell, places the binary on `PATH`, and wires up the prompt hook. No manual shell setup needed.
+The install script detects your shell, places the binary on `PATH`, and wires up the prompt hook. Open a new terminal and you're done.
 
 ## Usage
 
 ```sh
 gitflect status              # print current Git segment
-gitflect config              # show active configuration
-gitflect config set theme plain   # change a setting from the CLI
+gitflect theme list          # list themes, active one marked with *
+gitflect theme set minimal   # switch theme
+gitflect settings            # browse and edit all settings interactively
 gitflect --version
 ```
 
 Prompt segment example:
 
 ```
-user@host ~/project [main ≡ +1 ~0 -0 | !2 ~1 -0 ?]
+user@host ~/project (main ≡ +1 ~0 -0 | !2 ~1 -0 ?)
 ```
+
+See the [docs](https://shravangoswami.com/gitflect/) for [themes](https://shravangoswami.com/gitflect/docs/use/themes/) and [settings](https://shravangoswami.com/gitflect/docs/use/settings/).
 
 ## Development
 

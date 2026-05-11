@@ -5,6 +5,16 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-05-11
+
+### Changed
+
+- **Default theme changed to `posh-rounded`** — prompts use `( )` brackets out of the box. Switch back with `gitflect theme set posh`.
+
+### Added
+
+- Docs: navigation restructured into Get started / Use / Advanced sections with dedicated Themes and Settings pages.
+
 ## [0.2.0] - 2026-05-11
 
 ### Added
