@@ -1,8 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 128" role="img" aria-label="gitflect">
-  <path d="M34 72h32c16 0 28-12 28-28" fill="none" stroke="#101413" stroke-width="11" stroke-linecap="round"/>
-  <path d="M66 72c16 0 28 12 28 28" fill="none" stroke="#14724b" stroke-width="11" stroke-linecap="round"/>
-  <circle cx="34" cy="72" r="12" fill="#101413"/>
-  <circle cx="94" cy="42" r="12" fill="#eab308"/>
-  <circle cx="94" cy="100" r="12" fill="#14724b"/>
-  <text x="154" y="82" fill="#101413" font-family="Inter, ui-sans-serif, system-ui, sans-serif" font-size="56" font-weight="760">gitflect</text>
-</svg>
