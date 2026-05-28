@@ -172,35 +172,48 @@ pub fn current_repo_root() -> Option<PathBuf> {
 }
 
 fn discover() -> Result<Option<RepoInfo>, GitError> {
-    let git_dir = run_git(&["rev-parse", "--git-dir"])?;
-    if !git_dir.success {
+    let output = run_git(&[
+        "rev-parse",
+        "--git-dir",
+        "--is-inside-git-dir",
+        "--is-bare-repository",
+    ])?;
+    if !output.success {
         return Ok(None);
     }
 
+    let mut lines = output.stdout.lines();
+    let Some(git_dir_raw) = lines.next() else {
+        return Ok(None);
+    };
+    let Some(inside_git_dir_raw) = lines.next() else {
+        return Ok(None);
+    };
+    let Some(bare_raw) = lines.next() else {
+        return Ok(None);
+    };
+
     let current_dir = env::current_dir()
         .map_err(|error| GitError::new(format!("failed to read current directory: {error}")))?;
-    let git_dir = absolutize(current_dir.join(git_dir.stdout.trim()));
+    let git_dir = absolutize(current_dir.join(git_dir_raw.trim()));
+    let inside_git_dir = inside_git_dir_raw.trim() == "true";
+    let bare = bare_raw.trim() == "true";
 
-    let worktree = run_git(&["rev-parse", "--show-toplevel"])?;
-    let worktree = if worktree.success {
-        let path = worktree.stdout.trim();
-        if path.is_empty() {
-            None
+    let worktree = if !inside_git_dir && !bare {
+        let worktree_out = run_git(&["rev-parse", "--show-toplevel"])?;
+        if worktree_out.success {
+            let path = worktree_out.stdout.trim();
+            if path.is_empty() {
+                None
+            } else {
+                Some(absolutize(PathBuf::from(path)))
+            }
         } else {
-            Some(absolutize(PathBuf::from(path)))
+            None
         }
     } else {
         None
     };
-
-    let inside_git_dir = run_git(&["rev-parse", "--is-inside-git-dir"])?
-        .stdout
-        .trim()
-        == "true";
-    let bare = run_git(&["rev-parse", "--is-bare-repository"])?
-        .stdout
-        .trim()
-        == "true";
 
     Ok(Some(RepoInfo {
         bare,
@@ -338,14 +351,24 @@ fn strip_wrapping_quotes(path: &str) -> &str {
 
 fn resolve_branch(parsed_branch: Option<&str>, repo: &RepoInfo, config: &Config) -> String {
     let (rebase_branch, suffix) = operation_state(&repo.git_dir);
-    let mut branch = rebase_branch
-        .or_else(|| {
-            parsed_branch
-                .filter(|branch| !is_detached_status_branch(branch))
-                .map(ToOwned::to_owned)
-        })
-        .or_else(symbolic_branch)
-        .unwrap_or_else(|| detached_name(config));
+    let is_detached = parsed_branch.is_some_and(is_detached_status_branch);
+
+    let mut branch = rebase_branch.or_else(|| {
+        parsed_branch
+            .filter(|_| !is_detached)
+            .map(ToOwned::to_owned)
+    });
+
+    if branch.is_none() {
+        if !is_detached {
+            branch = symbolic_branch();
+        }
+        if branch.is_none() {
+            branch = Some(detached_name(config));
+        }
+    }
+
+    let mut branch = branch.unwrap();
 
     if repo.inside_git_dir && !repo.bare {
         branch = "GIT_DIR!".to_string();

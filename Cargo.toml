@@ -1,6 +1,6 @@
 [package]
 name = "gitflect"
-version = "0.4.1"
+version = "0.4.2"
 authors = ["Shravan Goswami <contact@shravangoswami.com>"]
 edition = "2024"
 rust-version = "1.85"

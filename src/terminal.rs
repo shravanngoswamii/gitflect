@@ -135,7 +135,52 @@ pub fn tty_read() -> Option<std::fs::File> {
     std::fs::OpenOptions::new().read(true).open("/dev/tty").ok()
 }
 
+#[cfg(unix)]
 pub fn terminal_rows() -> usize {
+    use std::os::raw::{c_int, c_ulong};
+
+    #[repr(C)]
+    struct Winsize {
+        ws_row: u16,
+        ws_col: u16,
+        ws_xpixel: u16,
+        ws_ypixel: u16,
+    }
+
+    unsafe extern "C" {
+        fn ioctl(fd: c_int, request: c_ulong, ...) -> c_int;
+    }
+
+    #[cfg(target_os = "macos")]
+    const TIOCGWINSZ: c_ulong = 0x40087468;
+    #[cfg(not(target_os = "macos"))]
+    const TIOCGWINSZ: c_ulong = 0x5413;
+
+    if let Ok(tty) = std::fs::File::open("/dev/tty") {
+        use std::os::unix::io::AsRawFd;
+        let fd = tty.as_raw_fd();
+        let mut ws = Winsize {
+            ws_row: 0,
+            ws_col: 0,
+            ws_xpixel: 0,
+            ws_ypixel: 0,
+        };
+        unsafe {
+            if ioctl(fd, TIOCGWINSZ, &mut ws) == 0 && ws.ws_row > 0 {
+                return ws.ws_row as usize;
+            }
+        }
+    }
+
+    stty_terminal_rows()
+}
+
+#[cfg(not(unix))]
+pub fn terminal_rows() -> usize {
+    stty_terminal_rows()
+}
+
+fn stty_terminal_rows() -> usize {
     let stdin = std::fs::File::open("/dev/tty")
         .map(std::process::Stdio::from)
         .unwrap_or_else(|_| std::process::Stdio::null());

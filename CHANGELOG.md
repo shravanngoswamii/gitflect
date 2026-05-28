@@ -5,6 +5,19 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-05-28
+
+### Added
+
+- Performance optimization: Batched multiple `git rev-parse` calls in `discover()` to reduce prompt process overhead by ~31%.
+- Performance optimization: Implemented libc FFI-based `ioctl` (via `TIOCGWINSZ`) on Unix systems in `terminal_rows()`, eliminating slow `stty size` child process spawning on TUI keypresses.
+- Performance optimization: Skipped redundant `git symbolic-ref` command execution when HEAD is known to be detached.
+
+### Fixed
+
+- Rust 2024 compliance: Changed the `extern "C"` block in `terminal.rs` to an `unsafe extern "C"` block.
+- Clippy warning: Avoided `clippy::unnecessary_map_or` warning in `git.rs`.
+
 ## [0.4.1] - 2026-05-11
 
 ### Changed
