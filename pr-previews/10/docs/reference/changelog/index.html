@@ -1,0 +1,257 @@
+<!DOCTYPE html><html lang="en"> <head><meta charset="utf-8"><meta name="viewport" content="width=device-width"><meta name="description" content="Notable changes in each gitflect release."><meta name="robots" content="index, follow"><meta name="googlebot" content="index, follow"><meta name="generator" content="Astro v6.4.6"><link rel="canonical" href="https://shravangoswami.com/gitflect/pr-previews/10/docs/reference/changelog/"><meta property="og:type" content="website"><meta property="og:site_name" content="gitflect"><meta property="og:url" content="https://shravangoswami.com/gitflect/pr-previews/10/docs/reference/changelog/"><meta property="og:title" content="Changelog | gitflect"><meta property="og:description" content="Notable changes in each gitflect release."><meta property="og:image" content="https://shravangoswami.com/gitflect/pr-previews/10/og.png"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:title" content="Changelog | gitflect"><meta name="twitter:description" content="Notable changes in each gitflect release."><meta name="twitter:image" content="https://shravangoswami.com/gitflect/pr-previews/10/og.png"><meta name="theme-color" content="#14724b" media="(prefers-color-scheme: light)"><meta name="theme-color" content="#101413" media="(prefers-color-scheme: dark)"><link rel="icon" type="image/svg+xml" href="/gitflect/pr-previews/10/favicon.svg"><!-- Umami Analytics --><script defer src="https://cloud.umami.is/script.js" data-website-id="08660148-af75-4f8f-b8c1-48e6c38de94d"></script><script type="application/ld+json">{"@context":"https://schema.org","@type":"WebPage","name":"Changelog | gitflect","description":"Notable changes in each gitflect release.","url":"https://shravangoswami.com/gitflect/pr-previews/10/docs/reference/changelog/"}</script><script type="application/ld+json">{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Documentation","item":"https://shravangoswami.com/gitflect/pr-previews/10/docs/"},{"@type":"ListItem","position":2,"name":"Changelog","item":"https://shravangoswami.com/gitflect/pr-previews/10/docs/reference/changelog/"}]}</script><title>Changelog | gitflect</title><script>
+			(() => {
+				const key = 'gitflect-theme';
+				const preferred = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+				const stored = localStorage.getItem(key);
+				document.documentElement.dataset.theme = stored || preferred;
+			})();
+		</script><link rel="stylesheet" href="/gitflect/pr-previews/10/_astro/BaseLayout.CgdfDzl8.css"></head> <body class="docs-page"> <header class="site-header" data-pagefind-ignore> <a class="brand" href="/gitflect/pr-previews/10/" aria-label="gitflect home"> <svg class="logo-mark" viewBox="0 0 128 128" role="img" aria-label="gitflect"> <path d="M34 72h32c16 0 28-12 28-28" fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="round"></path> <path d="M66 72c16 0 28 12 28 28" fill="none" stroke="var(--logo-accent)" stroke-width="11" stroke-linecap="round"></path> <circle cx="34" cy="72" r="12" fill="currentColor"></circle> <circle cx="94" cy="42" r="12" fill="var(--logo-warn)"></circle> <circle cx="94" cy="100" r="12" fill="var(--logo-accent)"></circle> </svg> <span>gitflect</span> </a> <div class="site-search" data-pagefind-ignore data-astro-cid-otpdt6jm> <button class="search-trigger" type="button" data-search-open aria-haspopup="dialog" data-astro-cid-otpdt6jm> <svg aria-hidden="true" viewBox="0 0 24 24" data-astro-cid-otpdt6jm> <path d="m20 20-4.35-4.35m2.35-5.15a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2" data-astro-cid-otpdt6jm></path> </svg> <span data-astro-cid-otpdt6jm>Search docs</span> </button> </div> <dialog class="search-modal" data-search-modal aria-label="Search documentation" data-pagefind-ignore data-astro-cid-otpdt6jm> <div class="search-panel" data-astro-cid-otpdt6jm> <div id="gitflect-search" data-astro-cid-otpdt6jm></div> </div> </dialog>  <script type="module">const i=document.querySelector("[data-search-open]"),t=document.querySelector("[data-search-modal]"),a="/gitflect/pr-previews/10/",s=a.endsWith("/")?a.slice(0,-1):a;let r=!1;const l=()=>new Promise(e=>{if(r){e();return}const c=document.createElement("link");c.rel="stylesheet",c.href=`${s}/pagefind/pagefind-ui.css`,document.head.appendChild(c);const n=document.createElement("script");n.src=`${s}/pagefind/pagefind-ui.js`,n.onload=()=>{new window.PagefindUI({element:"#gitflect-search",baseUrl:a,showImages:!1,showSubResults:!0,placeholder:"Search docs…",excerptLength:15}),r=!0,e()},n.onerror=()=>e(),document.head.appendChild(n)}),o=async()=>{t&&(await l(),t.showModal(),requestAnimationFrame(()=>{t.querySelector(".pagefind-ui__search-input")?.focus()}))},d=()=>{t?.open&&t.close(),i instanceof HTMLElement&&i.focus()};i?.addEventListener("click",o);document.addEventListener("gitflect:open-search",o);t?.addEventListener("click",e=>{e.target===t&&d()});document.addEventListener("keydown",e=>{(e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==="k"&&(e.preventDefault(),o()),e.key==="Escape"&&t?.open&&d()});</script> <nav class="top-nav" aria-label="Main navigation"> <a href="/gitflect/pr-previews/10/docs/">Docs</a> <a href="/gitflect/pr-previews/10/docs/start/install/">Install</a> <a class="nav-heart" href="https://github.com/sponsors/shravanngoswamii" target="_blank" rel="noopener noreferrer"> <svg viewBox="0 0 1024 1024" class="icon heart-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"> <path d="M927.4 273.5v-95.4h-87.9V82.8h-201v95.3h-87.9v95.4h-78.5v-95.4h-88V82.8H183.2v95.3H95.3v95.4H16.7v190.6h78.6v95.4h75.3v95.3H246v95.3h87.9v95.4h100.5v95.3h153.9v-95.3h100.4v-95.4h88v-95.3H852.1v-95.3h75.3v-95.4h78.5V273.5z" fill="#E02D2D"></path> </svg>
+Support
+</a> <a class="icon-link" href="https://github.com/shravanngoswamii/gitflect" aria-label="GitHub repository" target="_blank" rel="noopener noreferrer"> <svg viewBox="0 0 20 20" class="icon github-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"> <g fill="none" fill-rule="evenodd"> <g transform="translate(-140 -7559)" fill="currentColor"> <g transform="translate(56 160)"> <path d="M94,7399 C99.523,7399 104,7403.59 104,7409.253 C104,7413.782 101.138,7417.624 97.167,7418.981 C96.66,7419.082 96.48,7418.762 96.48,7418.489 C96.48,7418.151 96.492,7417.047 96.492,7415.675 C96.492,7414.719 96.172,7414.095 95.813,7413.777 C98.04,7413.523 100.38,7412.656 100.38,7408.718 C100.38,7407.598 99.992,7406.684 99.35,7405.966 C99.454,7405.707 99.797,7404.664 99.252,7403.252 C99.252,7403.252 98.414,7402.977 96.505,7404.303 C95.706,7404.076 94.85,7403.962 94,7403.958 C93.15,7403.962 92.295,7404.076 91.497,7404.303 C89.586,7402.977 88.746,7403.252 88.746,7403.252 C88.203,7404.664 88.546,7405.707 88.649,7405.966 C88.01,7406.684 87.619,7407.598 87.619,7408.718 C87.619,7412.646 89.954,7413.526 92.175,7413.785 C91.889,7414.041 91.63,7414.493 91.54,7415.156 C90.97,7415.418 89.522,7415.871 88.63,7414.304 C88.63,7414.304 88.101,7413.319 87.097,7413.247 C87.097,7413.247 86.122,7413.234 87.029,7413.87 C87.029,7413.87 87.684,7414.185 88.139,7415.37 C88.139,7415.37 88.726,7417.2 91.508,7416.58 C91.513,7417.437 91.522,7418.245 91.522,7418.489 C91.522,7418.76 91.338,7419.077 90.839,7418.982 C86.865,7417.627 84,7413.783 84,7409.253 C84,7403.59 88.478,7399 94,7399"></path> </g> </g> </g> </svg> <span>GitHub</span> </a> </nav> <button class="theme-toggle" type="button" data-theme-toggle aria-label="Toggle dark mode"> <svg class="sun-icon" aria-hidden="true" viewBox="0 0 24 24"> <path d="M12 17.2a5.2 5.2 0 1 0 0-10.4 5.2 5.2 0 0 0 0 10.4Zm0-14.7a1 1 0 0 1 1 1v1.2a1 1 0 1 1-2 0V3.5a1 1 0 0 1 1-1Zm0 16.8a1 1 0 0 1 1 1v1.2a1 1 0 1 1-2 0v-1.2a1 1 0 0 1 1-1Zm9.5-8.3a1 1 0 1 1 0 2h-1.2a1 1 0 1 1 0-2h1.2ZM4.7 11a1 1 0 1 1 0 2H3.5a1 1 0 1 1 0-2h1.2Zm13.74-6.44a1 1 0 0 1 0 1.42l-.85.85a1 1 0 0 1-1.42-1.42l.85-.85a1 1 0 0 1 1.42 0ZM7.83 16.17a1 1 0 0 1 0 1.42l-.85.85a1 1 0 0 1-1.42-1.42l.85-.85a1 1 0 0 1 1.42 0Zm9.76 0 .85.85a1 1 0 1 1-1.42 1.42l-.85-.85a1 1 0 0 1 1.42-1.42ZM6.98 4.56l.85.85a1 1 0 0 1-1.42 1.42l-.85-.85a1 1 0 1 1 1.42-1.42Z"></path> </svg> <svg class="moon-icon" aria-hidden="true" viewBox="0 0 24 24"> <path d="M21 14.58A8.2 8.2 0 0 1 9.42 3a9.25 9.25 0 1 0 11.59 11.59Z"></path> </svg> </button> <button class="mobile-menu-toggle" type="button" data-mobile-menu-toggle aria-label="Open menu" aria-expanded="false"> <svg class="mobile-menu-icon" aria-hidden="true" viewBox="0 0 24 24"> <path d="M4 7h16M4 12h16M4 17h16" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path> </svg> <svg class="mobile-close-icon" aria-hidden="true" viewBox="0 0 24 24"> <path d="m6 6 12 12M18 6 6 18" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path> </svg> </button> <div class="mobile-menu" data-mobile-menu> <div class="mobile-menu-card"> <div class="mobile-menu-head"> <span>Menu</span> <button type="button" data-mobile-search-open aria-label="Search documentation"> <svg aria-hidden="true" viewBox="0 0 24 24"> <path d="m20 20-4.35-4.35m2.35-5.15a7.5 7.5 0 1 1-15 0 7.5 7.5 0 0 1 15 0Z" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2"></path> </svg> </button> </div> <a href="/gitflect/pr-previews/10/docs/">Docs</a> <a href="/gitflect/pr-previews/10/docs/start/install/">Install</a> <a href="/gitflect/pr-previews/10/docs/start/shell-setup/">Shell setup</a> <a href="https://github.com/shravanngoswamii/gitflect" target="_blank" rel="noopener noreferrer"> <svg viewBox="0 0 20 20" class="icon github-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"> <g fill="none" fill-rule="evenodd"> <g transform="translate(-140 -7559)" fill="currentColor"> <g transform="translate(56 160)"> <path d="M94,7399 C99.523,7399 104,7403.59 104,7409.253 C104,7413.782 101.138,7417.624 97.167,7418.981 C96.66,7419.082 96.48,7418.762 96.48,7418.489 C96.48,7418.151 96.492,7417.047 96.492,7415.675 C96.492,7414.719 96.172,7414.095 95.813,7413.777 C98.04,7413.523 100.38,7412.656 100.38,7408.718 C100.38,7407.598 99.992,7406.684 99.35,7405.966 C99.454,7405.707 99.797,7404.664 99.252,7403.252 C99.252,7403.252 98.414,7402.977 96.505,7404.303 C95.706,7404.076 94.85,7403.962 94,7403.958 C93.15,7403.962 92.295,7404.076 91.497,7404.303 C89.586,7402.977 88.746,7403.252 88.746,7403.252 C88.203,7404.664 88.546,7405.707 88.649,7405.966 C88.01,7406.684 87.619,7407.598 87.619,7408.718 C87.619,7412.646 89.954,7413.526 92.175,7413.785 C91.889,7414.041 91.63,7414.493 91.54,7415.156 C90.97,7415.418 89.522,7415.871 88.63,7414.304 C88.63,7414.304 88.101,7413.319 87.097,7413.247 C87.097,7413.247 86.122,7413.234 87.029,7413.87 C87.029,7413.87 87.684,7414.185 88.139,7415.37 C88.139,7415.37 88.726,7417.2 91.508,7416.58 C91.513,7417.437 91.522,7418.245 91.522,7418.489 C91.522,7418.76 91.338,7419.077 90.839,7418.982 C86.865,7417.627 84,7413.783 84,7409.253 C84,7403.59 88.478,7399 94,7399"></path> </g> </g> </g> </svg>
+GitHub
+</a> <a class="nav-heart" href="https://github.com/sponsors/shravanngoswamii" target="_blank" rel="noopener noreferrer"> <svg viewBox="0 0 1024 1024" class="icon heart-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"> <path d="M927.4 273.5v-95.4h-87.9V82.8h-201v95.3h-87.9v95.4h-78.5v-95.4h-88V82.8H183.2v95.3H95.3v95.4H16.7v190.6h78.6v95.4h75.3v95.3H246v95.3h87.9v95.4h100.5v95.3h153.9v-95.3h100.4v-95.4h88v-95.3H852.1v-95.3h75.3v-95.4h78.5V273.5z" fill="#E02D2D"></path> </svg>
+Support
+</a> </div> </div> </header> <div class="mobile-backdrop" data-mobile-backdrop data-pagefind-ignore></div> <main data-pagefind-body>  <div class="docs-shell"> <aside class="docs-sidebar" aria-label="Documentation navigation" data-pagefind-ignore> <a class="docs-home" href="/gitflect/pr-previews/10/docs/">Documentation</a> <section> <h2>Get started</h2> <ul> <li> <a href="/gitflect/pr-previews/10/docs/"> Overview </a> </li><li> <a href="/gitflect/pr-previews/10/docs/start/install/"> Install </a> </li> </ul> </section><section> <h2>Use</h2> <ul> <li> <a href="/gitflect/pr-previews/10/docs/use/themes/"> Themes </a> </li><li> <a href="/gitflect/pr-previews/10/docs/use/settings/"> Settings </a> </li> </ul> </section><section> <h2>Advanced</h2> <ul> <li> <a href="/gitflect/pr-previews/10/docs/use/prompt-segments/"> Prompt segments </a> </li><li> <a href="/gitflect/pr-previews/10/docs/use/configuration/"> Configuration </a> </li><li> <a href="/gitflect/pr-previews/10/docs/reference/commands/"> Commands </a> </li><li> <a href="/gitflect/pr-previews/10/docs/start/shell-setup/"> Shell setup </a> </li><li> <a href="/gitflect/pr-previews/10/docs/start/update/"> Update </a> </li><li> <a href="/gitflect/pr-previews/10/docs/start/uninstall/"> Uninstall </a> </li><li> <a href="/gitflect/pr-previews/10/docs/reference/release-artifacts/"> Release artifacts </a> </li><li> <a class="active" href="/gitflect/pr-previews/10/docs/reference/changelog/"> Changelog </a> </li> </ul> </section> </aside> <div class="docs-mobile-panels" data-pagefind-ignore> <details class="docs-panel"> <summary>Documentation</summary> <nav aria-label="Documentation navigation"> <section> <h2>Get started</h2> <ul> <li> <a href="/gitflect/pr-previews/10/docs/"> Overview </a> </li><li> <a href="/gitflect/pr-previews/10/docs/start/install/"> Install </a> </li> </ul> </section><section> <h2>Use</h2> <ul> <li> <a href="/gitflect/pr-previews/10/docs/use/themes/"> Themes </a> </li><li> <a href="/gitflect/pr-previews/10/docs/use/settings/"> Settings </a> </li> </ul> </section><section> <h2>Advanced</h2> <ul> <li> <a href="/gitflect/pr-previews/10/docs/use/prompt-segments/"> Prompt segments </a> </li><li> <a href="/gitflect/pr-previews/10/docs/use/configuration/"> Configuration </a> </li><li> <a href="/gitflect/pr-previews/10/docs/reference/commands/"> Commands </a> </li><li> <a href="/gitflect/pr-previews/10/docs/start/shell-setup/"> Shell setup </a> </li><li> <a href="/gitflect/pr-previews/10/docs/start/update/"> Update </a> </li><li> <a href="/gitflect/pr-previews/10/docs/start/uninstall/"> Uninstall </a> </li><li> <a href="/gitflect/pr-previews/10/docs/reference/release-artifacts/"> Release artifacts </a> </li><li> <a class="active" href="/gitflect/pr-previews/10/docs/reference/changelog/"> Changelog </a> </li> </ul> </section> </nav> </details> <details class="docs-panel"> <summary>On this page</summary> <aside class="toc" aria-label="Table of contents" data-pagefind-ignore><h2>On this page</h2><ul><li><a href="#unreleased">[Unreleased]</a></li><li><a href="#042---2026-05-28">[0.4.2] - 2026-05-28</a></li><li class="nested"><a href="#added">Added</a></li><li class="nested"><a href="#fixed">Fixed</a></li><li><a href="#041---2026-05-11">[0.4.1] - 2026-05-11</a></li><li class="nested"><a href="#changed">Changed</a></li><li><a href="#040---2026-05-11">[0.4.0] - 2026-05-11</a></li><li class="nested"><a href="#changed-1">Changed</a></li><li class="nested"><a href="#removed">Removed</a></li><li><a href="#030---2026-05-11">[0.3.0] - 2026-05-11</a></li><li class="nested"><a href="#changed-2">Changed</a></li><li class="nested"><a href="#added-1">Added</a></li><li><a href="#020---2026-05-11">[0.2.0] - 2026-05-11</a></li><li class="nested"><a href="#added-2">Added</a></li><li><a href="#012---2026-05-10">[0.1.2] - 2026-05-10</a></li><li class="nested"><a href="#added-3">Added</a></li><li class="nested"><a href="#removed-1">Removed</a></li><li><a href="#011---2026-05-10">[0.1.1] - 2026-05-10</a></li><li class="nested"><a href="#fixed-1">Fixed</a></li><li class="nested"><a href="#added-4">Added</a></li><li><a href="#010---2026-05-10">[0.1.0] - 2026-05-10</a></li><li class="nested"><a href="#added-5">Added</a></li></ul></aside> </details> </div> <article class="docs-content" data-pagefind-body> <header class="docs-title"> <h1>Changelog</h1> <span>Notable changes in each gitflect release.</span> </header> <div class="prose">  <h1 id="changelog">Changelog</h1>
+<p>All notable changes to gitflect are documented here.
+The format follows <a href="https://keepachangelog.com/en/1.1.0/" rel="noopener noreferrer" target="_blank">Keep a Changelog</a>.</p>
+<h2 id="unreleased">[Unreleased]</h2>
+<h2 id="042---2026-05-28">[0.4.2] - 2026-05-28</h2>
+<h3 id="added">Added</h3>
+<ul>
+<li>Performance optimization: Batched multiple <code>git rev-parse</code> calls in <code>discover()</code> to reduce prompt process overhead by ~31%.</li>
+<li>Performance optimization: Implemented libc FFI-based <code>ioctl</code> (via <code>TIOCGWINSZ</code>) on Unix systems in <code>terminal_rows()</code>, eliminating slow <code>stty size</code> child process spawning on TUI keypresses.</li>
+<li>Performance optimization: Skipped redundant <code>git symbolic-ref</code> command execution when HEAD is known to be detached.</li>
+</ul>
+<h3 id="fixed">Fixed</h3>
+<ul>
+<li>Rust 2024 compliance: Changed the <code>extern "C"</code> block in <code>terminal.rs</code> to an <code>unsafe extern "C"</code> block.</li>
+<li>Clippy warning: Avoided <code>clippy::unnecessary_map_or</code> warning in <code>git.rs</code>.</li>
+</ul>
+<h2 id="041---2026-05-11">[0.4.1] - 2026-05-11</h2>
+<h3 id="changed">Changed</h3>
+<ul>
+<li>README: logo images now use absolute URLs so they render on crates.io.</li>
+<li>README: added Crates.io version badge and MIT license badge; links for Changelog and Contributing point to hosted docs and GitHub tab URLs respectively.</li>
+<li>Docs: added “Update” section to the install page covering both the install script and <code>cargo install</code>.</li>
+<li>Cargo.toml: added <code>repository</code>, <code>homepage</code>, <code>documentation</code>, and <code>exclude</code> fields.</li>
+</ul>
+<h2 id="040---2026-05-11">[0.4.0] - 2026-05-11</h2>
+<h3 id="changed-1">Changed</h3>
+<ul>
+<li><strong><code>gitflect settings</code> custom theme</strong> — selecting <code>custom</code> in the theme picker now launches the symbol wizard directly without leaving the settings flow.</li>
+<li><strong>Settings TUI</strong> — enum picker is now a full-screen overlay with proper scrolling; terminal height is read dynamically instead of hardcoded, so all options are reachable on any terminal size.</li>
+<li><strong>Install script</strong> — added <code>exec $SHELL</code> as a suggested alternative to <code>source ~/.bashrc</code> after a fresh install.</li>
+</ul>
+<h3 id="removed">Removed</h3>
+<ul>
+<li><code>gitflect config get</code>, <code>gitflect config set</code>, <code>gitflect config init</code>, <code>gitflect config default</code> — use <code>gitflect settings</code> for interactive editing and <code>gitflect config</code> / <code>gitflect config path</code> for inspection.</li>
+</ul>
+<h2 id="030---2026-05-11">[0.3.0] - 2026-05-11</h2>
+<h3 id="changed-2">Changed</h3>
+<ul>
+<li><strong>Default theme changed to <code>posh-rounded</code></strong> — prompts use <code>( )</code> brackets out of the box. Switch back with <code>gitflect theme set posh</code>.</li>
+</ul>
+<h3 id="added-1">Added</h3>
+<ul>
+<li>Docs: navigation restructured into Get started / Use / Advanced sections with dedicated Themes and Settings pages.</li>
+</ul>
+<h2 id="020---2026-05-11">[0.2.0] - 2026-05-11</h2>
+<h3 id="added-2">Added</h3>
+<ul>
+<li><strong>Custom theme</strong> (<code>theme=custom</code>) — a new theme variant that uses fully user-defined symbols. When set, no built-in symbols override user config; all 12 <code>symbol_*</code> keys are respected as-is.</li>
+<li><strong><code>gitflect theme</code> command</strong> — new top-level command for theme management:
+<ul>
+<li><code>gitflect theme list</code> — show all available themes with descriptions.</li>
+<li><code>gitflect theme set &#x3C;name></code> — switch theme and write to config file.</li>
+<li><code>gitflect theme set custom</code> — launch the interactive wizard.</li>
+</ul>
+</li>
+<li><strong>Interactive custom theme wizard</strong> — a full-terminal form that walks through all 12 status segment symbols. Supports arrow-key navigation (↑/↓), inline editing with Backspace, Enter to confirm, and q/Esc to cancel. Shows a review summary before saving.</li>
+<li><strong><code>posh-rounded</code> theme</strong> — identical to <code>posh</code> but wraps the status block with <code>( )</code> instead of <code>[ ]</code>.</li>
+<li><strong><code>emoji</code> theme</strong> — single-width Unicode symbol set: <code>⬆ ⬇ ⇅ ✔ ✘ ✚ ✎ ✖ ⚡ ◉</code>.</li>
+<li><strong><code>minimal</code> theme</strong> — ultra-compact single ASCII char per segment: <code>^ v x = ~ + * - !</code>.</li>
+<li><strong><code>retro</code> theme</strong> — bracket-style labels: <code>>> &#x3C;&#x3C; >&#x3C; -- !! [+] [~] [-] [!]</code>.</li>
+<li><strong><code>gitflect settings</code></strong> — interactive TUI settings explorer. Browse all 16 config options across five sections (Theme, Status, Branch, Prompt, Appearance) with ↑/↓ navigation. Cycle enum/bool values with ←/→ or Enter; edit text/number fields inline. Press <code>s</code> to save; press <code>q</code> twice to discard and quit.</li>
+<li><strong>Named themes</strong> — save and share custom symbol sets as standalone <code>.conf</code> files:
+<ul>
+<li><code>gitflect theme save &#x3C;name></code> — save current custom symbols to <code>~/.config/gitflect/themes/&#x3C;name>.conf</code>.</li>
+<li><code>gitflect theme load &#x3C;name></code> — load a named theme file as the active custom theme.</li>
+<li><code>gitflect theme saved</code> — list all saved named themes.</li>
+<li>The wizard’s final step now optionally prompts for a name, saving the theme file in one step.</li>
+</ul>
+</li>
+<li><strong>Go-back from summary in the wizard</strong> — pressing ↑ or Esc on the review screen returns to the symbol editor instead of cancelling.</li>
+<li><strong>Bracket fields in wizard</strong> — the custom theme wizard now includes <code>bracket_open</code>/<code>bracket_close</code> fields that configure <code>before_status</code>/<code>after_status</code> (e.g. <code>[</code>/<code>]</code> or <code>(</code>/<code>)</code>).</li>
+<li><strong>Named themes save/restore bracket style</strong> — <code>gitflect theme save</code> and <code>gitflect theme load</code> now also persist and apply <code>before_status</code>/<code>after_status</code> alongside all symbol keys.</li>
+<li><strong>Active theme highlighted in <code>gitflect theme list</code></strong> — the currently active theme is marked with a <code>*</code> in green; other themes are shown dimmed.</li>
+<li><strong>Enum picker in <code>gitflect settings</code></strong> — pressing Enter on an enum field (e.g. <code>theme</code>, <code>untracked_files</code>, <code>branch_display</code>) opens an inline option picker; ↑/↓ navigate options, Space/Enter selects, Esc cancels.</li>
+<li>Docs: new “Themes” section in Configuration with wizard key bindings table and manual <code>symbol_*</code> override examples; new <code>gitflect theme</code> and <code>gitflect settings</code> sections in Commands reference.</li>
+</ul>
+<h2 id="012---2026-05-10">[0.1.2] - 2026-05-10</h2>
+<h3 id="added-3">Added</h3>
+<ul>
+<li><code>gitflect config set &#x3C;key> &#x3C;value></code> — change a setting from the command line without editing the file.</li>
+<li><code>gitflect config get &#x3C;key></code> — print the current value of a setting with valid options shown inline.</li>
+<li><code>gitflect config</code> output now shows a <code># key: option1, option2</code> comment above each enumerated setting so valid values are always visible.</li>
+<li>Community health files: <code>CODE_OF_CONDUCT.md</code>, <code>CONTRIBUTING.md</code>, GitHub issue templates (bug report, feature request), and pull request template.</li>
+<li>Bug and security reporting links in <code>gitflect --help</code>.</li>
+</ul>
+<h3 id="removed-1">Removed</h3>
+<ul>
+<li>Custom tab-completion override for Git subcommands. Bash and Zsh ship superior built-in Git completions; the gitflect override was disruptive and unnecessary.</li>
+</ul>
+<h2 id="011---2026-05-10">[0.1.1] - 2026-05-10</h2>
+<h3 id="fixed-1">Fixed</h3>
+<ul>
+<li>Prompt segment duplicating on each command in VSCode’s integrated terminal and any other terminal that wraps <code>PS1</code> with shell integration escape sequences after gitflect sets it. The original-prompt baseline is now preserved across re-runs of the shell init, and the per-command change detection that mis-identified terminal modifications as user changes has been removed.</li>
+<li><code>source ~/.bashrc</code> no longer resets the stored baseline prompt to the already-modified value, so re-sourcing the profile is safe.</li>
+</ul>
+<h3 id="added-4">Added</h3>
+<ul>
+<li>Uninstall script (<code>uninstall.sh</code>) for clean removal of the binary and shell profile block.</li>
+<li>Improved install script output: step-by-step progress, explicit reload instruction (<code>source ~/.bashrc</code> / <code>source ~/.zshrc</code>), verify command, and removal instructions printed after install.</li>
+<li><code>gitflect config</code> shows all active settings (file + env overrides).</li>
+<li><code>gitflect config path</code> prints the config file path.</li>
+<li><code>gitflect config init</code> creates the config file from defaults if it does not exist.</li>
+<li><code>gitflect config default</code> prints the default config template (replaces <code>--print-default</code>).</li>
+</ul>
+<h2 id="010---2026-05-10">[0.1.0] - 2026-05-10</h2>
+<h3 id="added-5">Added</h3>
+<ul>
+<li>Fast Git-aware prompt segment for Bash and Zsh</li>
+<li>Branch name and detached HEAD state (<code>HEAD:abc1234</code>)</li>
+<li>Upstream divergence tracking: ahead ↑, behind ↓, diverged ↕, in-sync ≡, gone ×</li>
+<li>Staged, working, and untracked file counts (<code>+1 ~2 -0 | !3 ~0 -0 ?1</code>)</li>
+<li>In-progress operation markers: MERGING, REBASE, REBASE-i, REBASE-m, AM, CHERRY-PICKING, REVERTING, BISECTING</li>
+<li>Stash count (opt-in via config)</li>
+<li>Three built-in themes: <code>posh</code>, <code>plain</code>, <code>nerd</code></li>
+<li>Tab completion for 46 git subcommands with options and file path completions</li>
+<li><code>gitflect init bash</code> and <code>gitflect init zsh</code> shell integration</li>
+<li><code>gitflect config</code> for reading and listing configuration values</li>
+<li>Install script with automatic platform and shell detection</li>
+<li>Uninstall script for clean removal</li>
+<li>Documentation site</li>
+</ul>  </div> </article> <aside class="toc" aria-label="Table of contents" data-pagefind-ignore><h2>On this page</h2><ul><li><a href="#unreleased">[Unreleased]</a></li><li><a href="#042---2026-05-28">[0.4.2] - 2026-05-28</a></li><li class="nested"><a href="#added">Added</a></li><li class="nested"><a href="#fixed">Fixed</a></li><li><a href="#041---2026-05-11">[0.4.1] - 2026-05-11</a></li><li class="nested"><a href="#changed">Changed</a></li><li><a href="#040---2026-05-11">[0.4.0] - 2026-05-11</a></li><li class="nested"><a href="#changed-1">Changed</a></li><li class="nested"><a href="#removed">Removed</a></li><li><a href="#030---2026-05-11">[0.3.0] - 2026-05-11</a></li><li class="nested"><a href="#changed-2">Changed</a></li><li class="nested"><a href="#added-1">Added</a></li><li><a href="#020---2026-05-11">[0.2.0] - 2026-05-11</a></li><li class="nested"><a href="#added-2">Added</a></li><li><a href="#012---2026-05-10">[0.1.2] - 2026-05-10</a></li><li class="nested"><a href="#added-3">Added</a></li><li class="nested"><a href="#removed-1">Removed</a></li><li><a href="#011---2026-05-10">[0.1.1] - 2026-05-10</a></li><li class="nested"><a href="#fixed-1">Fixed</a></li><li class="nested"><a href="#added-4">Added</a></li><li><a href="#010---2026-05-10">[0.1.0] - 2026-05-10</a></li><li class="nested"><a href="#added-5">Added</a></li></ul></aside> </div>  </main> <footer class="site-footer" data-pagefind-ignore> <div class="footer-divider"></div> <div class="footer-inner"> <div class="footer-brand"> <svg class="footer-logo" viewBox="0 0 128 128" role="img" aria-label="gitflect"> <path d="M34 72h32c16 0 28-12 28-28" fill="none" stroke="currentColor" stroke-width="11" stroke-linecap="round"></path> <path d="M66 72c16 0 28 12 28 28" fill="none" stroke="var(--logo-accent)" stroke-width="11" stroke-linecap="round"></path> <circle cx="34" cy="72" r="12" fill="currentColor"></circle> <circle cx="94" cy="42" r="12" fill="var(--logo-warn)"></circle> <circle cx="94" cy="100" r="12" fill="var(--logo-accent)"></circle> </svg> <strong>gitflect</strong> <span>Fast Git context for Unix shells.</span> </div> <nav class="footer-nav" aria-label="Footer navigation"> <a href="/gitflect/pr-previews/10/docs/">Overview</a><a href="/gitflect/pr-previews/10/docs/start/install/">Install</a><a href="/gitflect/pr-previews/10/docs/use/themes/">Themes</a><a href="/gitflect/pr-previews/10/docs/use/settings/">Settings</a> </nav> <div class="footer-actions"> <a class="nav-heart" href="https://github.com/sponsors/shravanngoswamii" target="_blank" rel="noopener noreferrer"> <svg viewBox="0 0 1024 1024" class="icon heart-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"> <path d="M927.4 273.5v-95.4h-87.9V82.8h-201v95.3h-87.9v95.4h-78.5v-95.4h-88V82.8H183.2v95.3H95.3v95.4H16.7v190.6h78.6v95.4h75.3v95.3H246v95.3h87.9v95.4h100.5v95.3h153.9v-95.3h100.4v-95.4h88v-95.3H852.1v-95.3h75.3v-95.4h78.5V273.5z" fill="#E02D2D"></path> </svg>
+Support
+</a> <a class="icon-link" href="https://github.com/shravanngoswamii/gitflect" target="_blank" rel="noopener noreferrer"> <svg viewBox="0 0 20 20" class="icon github-icon" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"> <g fill="none" fill-rule="evenodd"> <g transform="translate(-140 -7559)" fill="currentColor"> <g transform="translate(56 160)"> <path d="M94,7399 C99.523,7399 104,7403.59 104,7409.253 C104,7413.782 101.138,7417.624 97.167,7418.981 C96.66,7419.082 96.48,7418.762 96.48,7418.489 C96.48,7418.151 96.492,7417.047 96.492,7415.675 C96.492,7414.719 96.172,7414.095 95.813,7413.777 C98.04,7413.523 100.38,7412.656 100.38,7408.718 C100.38,7407.598 99.992,7406.684 99.35,7405.966 C99.454,7405.707 99.797,7404.664 99.252,7403.252 C99.252,7403.252 98.414,7402.977 96.505,7404.303 C95.706,7404.076 94.85,7403.962 94,7403.958 C93.15,7403.962 92.295,7404.076 91.497,7404.303 C89.586,7402.977 88.746,7403.252 88.746,7403.252 C88.203,7404.664 88.546,7405.707 88.649,7405.966 C88.01,7406.684 87.619,7407.598 87.619,7408.718 C87.619,7412.646 89.954,7413.526 92.175,7413.785 C91.889,7414.041 91.63,7414.493 91.54,7415.156 C90.97,7415.418 89.522,7415.871 88.63,7414.304 C88.63,7414.304 88.101,7413.319 87.097,7413.247 C87.097,7413.247 86.122,7413.234 87.029,7413.87 C87.029,7413.87 87.684,7414.185 88.139,7415.37 C88.139,7415.37 88.726,7417.2 91.508,7416.58 C91.513,7417.437 91.522,7418.245 91.522,7418.489 C91.522,7418.76 91.338,7419.077 90.839,7418.982 C86.865,7417.627 84,7413.783 84,7409.253 C84,7403.59 88.478,7399 94,7399"></path> </g> </g> </g> </svg>
+GitHub
+</a> </div> <p class="footer-meta">
+&copy; 2026 gitflect
+</p> </div> </footer> <script>
+			(() => {
+				const key = 'gitflect-theme';
+				const root = document.documentElement;
+				const button = document.querySelector('[data-theme-toggle]');
+				const apply = (theme) => {
+					root.dataset.theme = theme;
+					button?.setAttribute('aria-pressed', String(theme === 'dark'));
+				};
+
+				button?.addEventListener('click', () => {
+					const next = root.dataset.theme === 'dark' ? 'light' : 'dark';
+					localStorage.setItem(key, next);
+					apply(next);
+				});
+
+				apply(root.dataset.theme || 'light');
+			})();
+
+			(() => {
+				const blocks = document.querySelectorAll('main pre');
+				for (const pre of blocks) {
+					if (pre.closest('.prompt-player') || pre.parentElement?.classList.contains('code-frame')) {
+						continue;
+					}
+
+					const frame = document.createElement('div');
+					frame.className = 'code-frame';
+					const button = document.createElement('button');
+					button.className = 'copy-code-button';
+					button.type = 'button';
+					button.textContent = 'Copy';
+					button.setAttribute('aria-label', 'Copy code block');
+
+					pre.parentNode?.insertBefore(frame, pre);
+					frame.append(pre, button);
+
+					button.addEventListener('click', async () => {
+						const text = pre.textContent || '';
+						try {
+							await navigator.clipboard.writeText(text);
+							button.textContent = 'Copied';
+							window.setTimeout(() => {
+								button.textContent = 'Copy';
+							}, 1300);
+						} catch {
+							button.textContent = 'Failed';
+							window.setTimeout(() => {
+								button.textContent = 'Copy';
+							}, 1300);
+						}
+					});
+				}
+			})();
+
+			(() => {
+				const header = document.querySelector('.site-header');
+				if (!header) return;
+				let lastY = window.scrollY;
+				let ticking = false;
+
+				const update = () => {
+					const y = window.scrollY;
+					if (header.classList.contains('menu-open')) {
+						lastY = y;
+						ticking = false;
+						return;
+					}
+					if (y <= 60) {
+						header.classList.remove('header-hidden');
+					} else if (y > lastY) {
+						header.classList.add('header-hidden');
+					} else {
+						header.classList.remove('header-hidden');
+					}
+					lastY = y;
+					ticking = false;
+				};
+
+				window.addEventListener('scroll', () => {
+					if (!ticking) {
+						requestAnimationFrame(update);
+						ticking = true;
+					}
+				}, { passive: true });
+			})();
+
+			(() => {
+				const header = document.querySelector('.site-header');
+				const toggle = document.querySelector('[data-mobile-menu-toggle]');
+				const backdrop = document.querySelector('[data-mobile-backdrop]');
+				const menu = document.querySelector('[data-mobile-menu]');
+				const search = document.querySelector('[data-mobile-search-open]');
+				const closeMenu = () => {
+					header?.classList.remove('menu-open');
+					toggle?.setAttribute('aria-expanded', 'false');
+				};
+				const openMenu = () => {
+					header?.classList.add('menu-open');
+					toggle?.setAttribute('aria-expanded', 'true');
+				};
+
+				toggle?.addEventListener('click', () => {
+					header?.classList.contains('menu-open') ? closeMenu() : openMenu();
+				});
+				backdrop?.addEventListener('click', closeMenu);
+				menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+				search?.addEventListener('click', () => {
+					closeMenu();
+					document.dispatchEvent(new CustomEvent('gitflect:open-search'));
+				});
+				document.addEventListener('keydown', (event) => {
+					if (event.key === 'Escape') closeMenu();
+				});
+			})();
+
+
+		</script> </body> </html>
