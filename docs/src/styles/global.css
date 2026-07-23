@@ -565,8 +565,11 @@ pre {
 }
 
 .prompt-player {
+	position: relative;
 	min-width: 0;
 	width: 100%;
+	height: 0;
+	padding-top: calc(29.215% + 32px);
 	border: 1px solid var(--line);
 	border-radius: 8px;
 	background: var(--code-bg);
@@ -576,6 +579,8 @@ pre {
 }
 
 .prompt-player div.ap-wrapper {
+	position: absolute;
+	inset: 0;
 	justify-content: center;
 	width: 100%;
 	min-width: 0;
